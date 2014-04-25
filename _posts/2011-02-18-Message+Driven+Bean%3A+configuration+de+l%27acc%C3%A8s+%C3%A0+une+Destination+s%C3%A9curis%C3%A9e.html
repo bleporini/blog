@@ -1,0 +1,16 @@
+---
+layout: post
+title: Message Driven Bean&#58; configuration de l'accès à une Destination sécurisée
+tags: [java , mdb , ejb , javaee , sécurité]
+---
+{% include JB/setup %}
+<br /> 
+<br />Pour des besoins &eacute;vidents, on m'a demand&eacute; de s&eacute;curiser l'acc&egrave;s aux Destinations JMS (Queue/Topic), c'est &agrave; dire les composants doivent s'authentifier pour pouvoir publier ou consommer des &nbsp;message. 
+<br />Quand la connexion est cr&eacute;&eacute;e programmatiquement, pas de soucis: 
+<br /> 
+<br /> 
+<pre class="brush:java">connectionFactory.createConnection(jmsUserName, jmsPassword);<br /></pre> 
+<br />Toutefois, la question s'est pos&eacute;e lorsque j'ai du d&eacute;ployer un MDB et apr&egrave;s avoir fouill&eacute; dans la JSR EJB spec 3.1, je n'ai pas trouv&eacute; comment indiquer dans les&nbsp;m&eacute;ta&nbsp;donn&eacute;es les valeurs user et password. Puis en &eacute;largissant le champ de mes recherches avec Google, je suis tomb&eacute; sur la config suivante qui r&eacute;pond au besoin: 
+<br /> 
+<br /> 
+<pre class="brush:java">@MessageDriven(activationConfig = {<br />        @ActivationConfigProperty(propertyName = &quot;user&quot;,<br />                propertyValue = &quot;mdbuser&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;password&quot;,<br />                propertyValue = &quot;mdbpassword&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;acknowledgeMode&quot;,<br />                propertyValue = &quot;Auto-acknowledge&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;destinationType&quot;,<br />                propertyValue = &quot;javax.jms.Queue&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;destination&quot;,<br />                propertyValue = &quot;/queue/myQueue&quot;)<br />})<br />public class MyMDB implements MessageListener {<br /></pre>D'accord, c'&eacute;tait quasi-&eacute;vident... mais comme je trouve que &ccedil;a manque un peu de documentation, je remets une couche!

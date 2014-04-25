@@ -1,0 +1,85 @@
+---
+layout: post
+title: JVM&#58; Le prix de l'immutabilité
+tags: [jvm , immutabilité , scala , mutabilité , gc]
+---
+{% include JB/setup %}
+<p>Je l'avoue, durant mes vacances au bord de l'eau, entre les ap&eacute;ritifs et les siestes syndicales, une question est venue me chatouiller: les &eacute;vang&eacute;listes de la programmation fonctionnelle nous bassinent avec les avantages de l'immutabilit&eacute; mais au bout du compte &ccedil;a doit pas &ecirc;tre gratuit cette affaire l&agrave;? Combien &ccedil;a co&ucirc;te? Du coup je me suis fix&eacute; comme objectif pour ma rentr&eacute;e de r&eacute;unir des &eacute;l&eacute;ments permettant d'avoir un peu plus de recul sur cette question. Je vous propose de suivre ma d&eacute;marche dans ce billet. </p> 
+<p>Tout d'abord, rappelons que la principale vertu de l'immutabilit&eacute; est qu'un objet non modifiable peut &ecirc;tre acc&eacute;d&eacute; par plusieurs threads sans n&eacute;cessiter de verrouillage, permettant d'exclure toute situation de comp&eacute;tition (race condition) sur une ressource. Il semble que cela soit une des clefs permettant de passer de la gestion de la concurrence au parall&eacute;lisme. Soit, toutefois les valeurs d'un objet doivent parfois &ecirc;tre modifi&eacute;es, impliquant la cr&eacute;ation d'une nouvelle entit&eacute; immuable avec la ou les nouvelle(s) valeur(s), l'allocation d'une nouvelle instance et potentiellement la collecte de l'ancienne. C'est pr&eacute;cis&eacute;ment ces effets de bord qui retiennent mon attention. </p> 
+<p> Le POC prend la forme de tests unitaires dans lesquels tous les objets d'une liste sont modifi&eacute;s: une case class comprenant un membre unique de type Long et l'op&eacute;ration appliqu&eacute;e est l'ajout du nombre de nanosecondes contenue dans une journ&eacute;e. La situation est observ&eacute;e sous deux angles diff&eacute;rents: l'objet est modifiable et sa variable d'instance est mise &agrave; jour ou l'objet est immuable et une nouvelle entit&eacute; est cr&eacute;&eacute;e. Le langage est Scala, le code est trivial et vous pouvez le trouver les d&eacute;tails sur Github (<a href="https://github.com/bleporini/immutabilityCost">https://github.com/bleporini/immutabilityCost</a>). </p> 
+<p> Les classes: </p> 
+<pre class="brush: scala;  ">  case class Immutable(date:Long)<br />  case class Mutable(var date:Long)<br /></pre> Les fonctions de modification: 
+<pre class="brush: scala;  ">    def addOneDay(from:Immutable):Immutable= Immutable(from.date+oneDayNs)<br /><br />    def addOneDay(from:Mutable):Mutable={<br />      from.date = from.date + oneDayNs<br />      from<br />    }<br /></pre> L'application des fonctions: 
+<pre class="brush: scala;  ">mo /*la liste*/ map transformer /* la foncntion modifiante */</pre> 
+<h3>Le probl&egrave;me du micro benchmark</h3> 
+<p>Le programme s'ex&eacute;cute sur la JVM, un environnement d'ex&eacute;cution &quot;manag&eacute;&quot;, c'est &agrave; dire qu'en plus de faire le m&eacute;nage dans la m&eacute;moire (Garbage Collection), la machine virtuelle, et plus particuli&egrave;rement le JIT (Just In Time compiler), r&eacute;alise plein de choses &agrave; l'insu de notre plein gr&eacute; &agrave; des fins d'optimisations, comme compiler du bytecode en code natif et l'int&eacute;grer dans les piles d'appel (OSR), &quot;inliner&quot; des m&eacute;thodes, etc. Ce comportement peut contribuer de fa&ccedil;on importante dans la difficult&eacute; &agrave; obtenir des temps d'ex&eacute;cution r&eacute;p&eacute;tables. </p> 
+<p>Il ne me semble pas opportun de proc&eacute;der &agrave; un param&eacute;trage hasardeux visant &agrave; stabiliser les r&eacute;sultats. Mon approche s'at&egrave;le plut&ocirc;t &agrave; observer le comportement de la JVM lors de l'ex&eacute;cution en boucle du test pour d&eacute;terminer quand les manipulations sur le code sont stabilis&eacute;es et les temps mesur&eacute;s sont &agrave; peu pr&egrave;s constants. En gros le chrono est d&eacute;clench&eacute; quand la JVM est &quot;chaude&quot;. </p> 
+<p>En ce qui concerne le GC, je m'assure simplement en analysant les logs produits par le param&egrave;tre -XX:+PrintGCDetails qu'il n'y a pas de collecte compl&egrave;te qui pourrait fausser les r&eacute;sultats. </p> 
+<p>Du c&ocirc;t&eacute; de la manipulation de code, une ex&eacute;cution verbeuse (&eacute;tat d'avancement sur la sortie standard) du test en boucle conjugu&eacute;e &agrave; l'affichage des informations de compilation (-XX:+PrintCompilation) me permet de visualiser &agrave; partir de quand le code n'est plus manipul&eacute;. Dans le cas &eacute;tudi&eacute; il faut moins d'une centaine d'it&eacute;ration pour que JIT calme ses ardeurs (les 700 premi&egrave;res manipulations vous sont graci&eacute;es…): </p> 
+<p> </p> 
+<pre class="brush: bash;  "><br />[…]<br />    704   75             scala.collection.Iterator$class::foreach (26 bytes)<br />    704   65             scala.collection.TraversableLike$$anonfun$map$1::apply (6 bytes)   made not entrant<br />    704   66             scala.collection.TraversableLike$$anonfun$map$1::apply (20 bytes)   made not entrant<br />    711   76             blep.ImmutabilityTest$$anonfun$1$$anonfun$bencher$1$1::apply (9 bytes)<br />    711   77             blep.ImmutabilityTest$$anonfun$1$$anonfun$bencher$1$1::apply (9 bytes)<br />    713   78             blep.ImmutabilityTest$$anonfun$1::blep$ImmutabilityTest$$anonfun$$addOneDay$1 (23 bytes)<br />    713   79             blep.ImmutabilityTest$Immutable::date (5 bytes)<br />    713   80             blep.package$::oneDayNs (5 bytes)<br />    714   81             scala.collection.TraversableLike$$anonfun$map$1::apply (6 bytes)<br />    714   82             scala.collection.TraversableLike$$anonfun$map$1::apply (20 bytes)<br />    720   83             java.lang.StringBuilder::append (8 bytes)<br />0 nth time: 15316 us<br />    723   84             scala.collection.immutable.VectorBuilder::display1 (5 bytes)<br />    724   85             scala.collection.immutable.VectorBuilder::depth (5 bytes)<br />    724   86             scala.collection.immutable.VectorBuilder::display0_$eq (6 bytes)<br />    724   87             scala.collection.immutable.VectorPointer$class::gotoNextBlockStartWritable (757 bytes)<br />    728   88             scala.collection.immutable.VectorIterator::display0_$eq (6 bytes)<br />    729   89             scala.collection.immutable.VectorPointer$class::gotoNextBlockStart (336 bytes)<br />    752   90             scala.collection.immutable.VectorIterator::display1 (5 bytes)<br />100 nth time: 1423 us<br />200 nth time: 1394 us<br />300 nth time: 2639 us<br />400 nth time: 1362 us<br />500 nth time: 1369 us<br />600 nth time: 1419 us<br /></pre> Le calibrage issu de ces informations conduisent &agrave; effectuer l'exp&eacute;rimentation dans les conditions suivantes: la liste comprend 100000 &eacute;l&eacute;ments, l'application de la modification est effectu&eacute;e 10000 fois sur la liste, chaque it&eacute;ration est chronom&eacute;tr&eacute;e et une moyenne globale plus une sur les 100 derni&egrave;res sont calcul&eacute;es. C'est un peu bourrin, mais cela permet de g&eacute;n&eacute;rer des r&eacute;sultats assez stables. 
+<p></p> 
+<p>Dernier d&eacute;tail, il est &eacute;videmment important que le lanceur (SBT) &quot;forke&quot; la JVM pour les tests, il serait ballot que le comportement soit parasit&eacute; par l'outil de build... </p> 
+<p> Je n'ai pas tenu compte des potentielles probl&eacute;matiques li&eacute;es au cache L1/L2/L3 du socle mat&eacute;riel, si quelqu'un sait comment r&eacute;colter ce genre d'informations sur Mac, merci de contribuer! </p> 
+<p> La partie la plus &quot;velue&quot; aura &eacute;t&eacute; d'ajuster les param&egrave;tres de lancement dans SBT (S pour simple, vous &ecirc;tes s&ucirc;rs?). </p> 
+<h3>Les r&eacute;sultats</h3> 
+<p>Venons en aux chiffres: </p> 
+<table class="table"> 
+ <tbody> 
+  <tr> 
+   <th>M&eacute;thode</th> 
+   <th>It&eacute;rations</th> 
+   <th>Max</th> 
+   <th>Min</th> 
+   <th>Moy</th> 
+   <th>Moy(100)</th> 
+   <th>GC Pauses</th> 
+   <th>Pauses Tot</th> 
+   <th>FGC Pauses</th> 
+  </tr> 
+  <tr> 
+   <td>Mutable</td> 
+   <td>10000</td> 
+   <td>34620</td> 
+   <td>951</td> 
+   <td>2505</td> 
+   <td>1111</td> 
+   <td>66</td> 
+   <td>0,52</td> 
+   <td>0</td> 
+  </tr> 
+  <tr> 
+   <td>Immutable</td> 
+   <td>10000</td> 
+   <td>45160</td> 
+   <td>1137</td> 
+   <td>4327</td> 
+   <td>1417</td> 
+   <td>126</td> 
+   <td>1,76</td> 
+   <td>0</td> 
+  </tr> 
+  <tr> 
+   <td></td> 
+   <td></td> 
+   <td>30 % </td> 
+   <td>20 % </td> 
+   <td>73 % </td> 
+   <td>28 % </td> 
+   <td>91 % </td> 
+   <td>238 %</td> 
+   <td></td> 
+  </tr> 
+ </tbody> 
+</table> 
+<p>Ce n'est donc pas une surprise, comparativement, le GC ramasse : il se d&eacute;clenche deux fois plus pour le m&ecirc;me travail et g&eacute;n&egrave;re 3,4 fois plus de temps de pauses quand le traitement engendre de nouvelles entit&eacute;s &agrave; chaque modification. </p> 
+<p> Mais au fond, le r&eacute;sultat qui m'int&eacute;resse le plus est la diff&eacute;rence au niveau du temps d'ex&eacute;cution, le nerf de la guerre, l'immutabilit&eacute; dure &agrave; priori pas loin de 30% plus longtemps. Voil&agrave;, tu t'es fait attir&eacute; sur cet article au titre tendance, tu as suivi un geek qui fait mumuse avec des additions pour arriver &agrave; la conclusion que g&eacute;n&eacute;rer plus de travail prend plus de temps… tu peux retourner voir si les specs de l'iPhone 6 n'ont pas fuit&eacute;! </p> 
+<p> Plus s&eacute;rieusement, le temps d'ex&eacute;cution &eacute;tant la finalit&eacute; principale &agrave; mon sens, que peut-on tirer de ce chiffre de 30%? </p> 
+<p> 30% d'augmentation du taux de ch&ocirc;mage c'est consid&eacute;rable et c'est une catastrophe, 30% d'augmentation de salaire, &ccedil;a change la vie. En revanche un ordinateur 30% plus puissant qu'un autre &ccedil;a fait pas une grosse diff&eacute;rence &agrave; l'utilisation et mon avis est que ce constat se transpose aux programmes informatiques. Je m'explique: quand je clique sur un bouton, que l'appli web r&eacute;ponde en 100ms ou 130ms, c'est rapide pourtant il y a 30% d'&eacute;cart; si au contraire quand je clique et que la r&eacute;ponse arrive au bout de 10 min ou 13 min, &ccedil;a rame la mort dans les deux cas! Donc 30% ce n'est pas n&eacute;gligeable mais cela ne nous fait pas changer de classification: on ne passe pas de &quot;&ccedil;a se tra&icirc;ne&quot; &agrave; &quot;&ccedil;a envoie du bois&quot;. </p> 
+<p> Peut-on d&egrave;s lors troller qu'adopter l'immutabilit&eacute; entra&icirc;ne 30% de d&eacute;gradations sur les temps d'ex&eacute;cution? Je vois d&eacute;j&agrave; le tweet ravageur: </p> 
+<p> <a href="http://2.bp.blogspot.com/-c--WzkZj8-A/UhOnXuIZ_5I/AAAAAAAABEo/2yhxO1bpc-w/s1600/fake_tweet.png" imageanchor="1"><img border="0" src="/assets/img/JVM+Le+prix+de+l_immutabilite/fake_tweet.png" /></a></p> 
+<p> D'une part, l'exp&eacute;rimentation zoome sur un point particulier et la diff&eacute;rence entre les deux zones mesur&eacute;es se r&eacute;sume &agrave; &quot;allocation d'un Long et l'addition de deux Long&quot; contre &quot;allocation d'une instance de case class, d'un Long et addition de deux Long&quot;. Le trait est forc&eacute;ment grossi. </p> 
+<p>D'autre part, dans la plupart des applications, beaucoup plus de temps est potentiellement consomm&eacute; dans les I/O (r&eacute;seau ou disque), dans l'interrogation des syst&egrave;mes de persistance, ou encore lors de la g&eacute;n&eacute;ration de vue ou de r&eacute;ponses, etc que dans l'allocation et la collecte. Dans la vraie vie, le gain de 30% n'est &eacute;videmment pas global. </p> 
+<p>De plus, si les entit&eacute;s mutables de votre application sont partag&eacute;es entre plusieurs threads, vous &ecirc;tes vou&eacute;s &agrave; recourir &agrave; l'utilisation de moniteurs pour synchroniser les acc&egrave;s (autant en lecture qu'en &eacute;criture), du coup le temps gagn&eacute; sur l'immutabilit&eacute; peut ais&eacute;ment &ecirc;tre perdu, surtout que la programmation concurrente est souvent mal ma&icirc;tris&eacute;e. </p> 
+<p>Sans compter que si des copies d&eacute;fensives (&ccedil;a m'arrive jamais…) doivent s&eacute;curiser l'acc&egrave;s aux membres de vos classes, l'inconv&eacute;nient de la gestion de la concurrence sera cumul&eacute; avec celui des allocations et collectes induites par les duplications d'objets... </p> 
+<p> Compte tenu de ces donn&eacute;es, mon opinion est que l'immutabilit&eacute; co&ucirc;te certes plus, mais dans la plupart des situations la charge suppl&eacute;mentaire induite ne sera gu&egrave;re perceptible, sauf si vous avez la chance de travailler sur une application extr&ecirc;mement exigeante dans laquelle la moindre latence est chass&eacute;e, telle q'un automate temps r&eacute;el… </p>

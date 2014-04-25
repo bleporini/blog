@@ -1,0 +1,23 @@
+---
+layout: post
+title: Windows et les variables d'environnement
+tags: [windows]
+---
+{% include JB/setup %}
+Un coup de gueule rapide un jour de r&eacute;veillon! 
+<br /> 
+<br />Comme tout d&eacute;veloppeur JEE, la variable d'environnement PATH de WindowsXP contient %JAVA_HOME%\bin, jusque l&agrave; tout va bien. 
+<br /> 
+<br />Mais voil&agrave; que je d&eacute;cide de changer de version de JVM juste dans le contexte d'une console ligne de commande Windows et je repositionne donc %JAVA_HOME% sur l'install d'un autre SDK. Cependant, contrairement &agrave; ce que j'escomptais, les variables d'environnement utilis&eacute;es dans la d&eacute;claration d'une autre variable ne sont pas &eacute;valu&eacute;es &agrave; la vol&eacute;e mais substitu&eacute;es par leur valeur lors de l'instanciation!! 
+<br /> 
+<br /> 
+<div style="background-color:black;"> 
+ <br /> 
+ <span style="color: rgb(255, 255, 255);font-size:85%;"><span style="font-family:courier new;">Z:\&gt;set essai=helloWorld<br /><br />Z:\&gt;echo %essai%<br />helloWorld<br /><br />Z:\&gt;set essai2=%essai%__2<br /><br />Z:\&gt;echo %essai2%<br />helloWorld__2<br /><br />Z:\&gt;set essai=goodByeWorld<br /><br />Z:\&gt;echo %essai%<br />goodByeWorld<br /><br />Z:\&gt;echo %essai2%<br />helloWorld__2</span></span> 
+</div> 
+<br /> 
+<br />Classe non??? 
+<br /> 
+<br />Ca fait longtemps que je ne porte plus Windows et les produits &quot;microsoftiens&quot; dans mon coeur mais quand m&ecirc;me, c'est vraiment pas un comportement digne d'un produit professionnel. 
+<br /> 
+<br />Ce n'est s&ucirc;rement pas une d&eacute;couverte (sauf pour moi aujourd'hui), mais je trouve que &ccedil;a m&eacute;ritait le coup de gueule.

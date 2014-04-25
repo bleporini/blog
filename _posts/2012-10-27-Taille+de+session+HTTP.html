@@ -1,0 +1,51 @@
+---
+layout: post
+title: Taille de session HTTP
+tags: [java , visualvm , profiling]
+---
+{% include JB/setup %}
+<div class="separator" style="clear: both; text-align: center;"> 
+ <br /> 
+</div>Jusqu'ici pour d&eacute;terminer la taille d'une session HTTP, j'utilisais Memory Analyzer Tool: 
+<br /> 
+<ul> 
+ <li>Acquisition de heap dump</li> 
+ <li>Ouverture de la vue histogramme</li> 
+ <li>Recherche de l'impl&eacute;mentation de la session: pour Tomcat c'est org.apache.catalina.session.StandardSession.</li> 
+ <li>Clic droit sur la classe : List Objects / with outgoing references:</li> 
+</ul> 
+<div class="separator" style="clear: both; text-align: center;"> 
+ <a href="http://1.bp.blogspot.com/-WEzmHJOcDd8/UIuJsXjddjI/AAAAAAAAAkY/Lm-XYxG7Mzs/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.12.23.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="155" src="/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.12.23.png" width="320" /></a> 
+</div> 
+<br />Et l&agrave; j'obtiens une vue contenant toutes les sessions et surtout le graal la valeur Retained Heap: 
+<br /> 
+<div class="separator" style="clear: both; text-align: center;"> 
+ <a href="http://4.bp.blogspot.com/-LM0qM1GTZqE/UIuKdusfPmI/AAAAAAAAAkg/-ty3_2xDros/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.12.56.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="76" src="/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.12.56.png" width="320" /></a> 
+</div> 
+<br /> 
+<div style="text-align: justify;">
+  Alors, &ccedil;a permet d'obtenir l'information mais il faut reconna&icirc;tre que MAT est assez lent pour parser les dumps, y compris sur mon Core i7 4 coeurs, 8Go, SSD, 48 soupapes, double vanos et pot Polini custom... Donc quand on veut conna&icirc;tre l'impact d'un clic sur la session, c'est pas terrible en terme d'efficacit&eacute;. 
+</div> 
+<div style="text-align: justify;">
+  J'ai trouv&eacute; un peu plus rapide avec VisualVM: 
+</div> 
+<br /> 
+<ul> 
+ <li>G&eacute;n&eacute;ration du dump:</li> 
+</ul> 
+<div class="separator" style="clear: both; text-align: center;"> 
+ <a href="http://2.bp.blogspot.com/-RUUy7zTiy5A/UIuN9F7_JtI/AAAAAAAAAkw/w55HoV-wqO4/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.30.16.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="258" src="/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.30.16.png" width="320" /></a> 
+</div> 
+<div class="separator" style="clear: both; text-align: justify;"></div> 
+<ul> 
+ <li>Ouverture de la console OQL et ex&eacute;cution de la requ&ecirc;te 'select rsizeof(s) from org.apache.catalina.session.StandardSession s', rsizeof &eacute;tant la fonction permettant de calculer la retained size :</li> 
+</ul> 
+<div style="text-align: center;"> 
+ <a href="http://2.bp.blogspot.com/-DUAKO-GNPJA/UIuOsUFW_EI/AAAAAAAAAk4/uVipGXLnDDg/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.34.39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="140" src="/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.34.39.png" width="320" /></a> 
+</div> 
+<div style="text-align: justify;">
+  On peut utiliser aussi 
+ <a href="http://messadmin.sourceforge.net/">MessAdmin</a> pour obtenir l'information directement, mais l&agrave; j'avais pas envie de faire l'installation. 
+</div> 
+<br /> 
+<br />

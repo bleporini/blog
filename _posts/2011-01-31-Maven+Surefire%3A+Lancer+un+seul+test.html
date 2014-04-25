@@ -1,0 +1,19 @@
+---
+layout: post
+title: Maven Surefire&#58; Lancer un seul test
+tags: [test , maven]
+---
+{% include JB/setup %}
+Il est parfois fastidieux d'avoir &agrave; lancer l'int&eacute;gralit&eacute; des tests d'un projet ou module maven si on a besoin d'en lancer un seul. Pour &eacute;viter cela on peut indiquer &agrave; surefire quel test ex&eacute;cuter: 
+<br /> 
+<span class="Apple-style-span" style="background-color: #eeeeee; font-family: 'Courier New', Courier, monospace;"><br /></span> 
+<br /> 
+<span class="Apple-style-span" style="background-color: #eeeeee; font-family: 'Courier New', Courier, monospace;">$&nbsp;mvn test -Dtest=OnlyMe</span> 
+<br /> 
+<span class="Apple-style-span" style="background-color: #eeeeee; font-family: 'Courier New', Courier, monospace;"><br /></span> 
+<br />On notera &eacute;galement qu'il n'est pas n&eacute;cessaire d'utiliser le &quot;Fully qualified name&quot; de la classe de test, le nom de la classe est suffisant. 
+<br /> 
+<br />Plus d'infos: &nbsp; 
+<a href="http://maven.apache.org/plugins/maven-surefire-plugin/examples/single-test.html">http://maven.apache.org/plugins/maven-surefire-plugin/examples/single-test.html</a> 
+<br /> 
+<a href="http://maven.apache.org/plugins/maven-surefire-plugin/test-mojo.html#test">http://maven.apache.org/plugins/maven-surefire-plugin/test-mojo.html#test</a>

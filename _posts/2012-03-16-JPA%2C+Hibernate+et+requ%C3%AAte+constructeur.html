@@ -1,0 +1,100 @@
+---
+layout: post
+title: JPA, Hibernate et requête constructeur
+tags: [java , jpa , hibernate , guava]
+---
+{% include JB/setup %}
+La spec JPA pr&eacute;voit la possibilit&eacute; de construire des POJO (non entit&eacute;) &agrave; l'int&eacute;rieur de requ&ecirc;tes JPQL (4.8.2 de la JSR317), ce qui s'av&eacute;rer pratique pour requ&ecirc;ter et construire des DTO en une &eacute;tape. Je ne m'en prive donc pas : 
+<br /> 
+<br /> 
+<pre class="brush:java">TypedQuery&lt;hoteldto&gt; query =&nbsp;<br />     em.createQuery(&quot;select  new org.blep.poc.hcq.HotelDto(h) from Hotel h&quot;,<br />     HotelDto.class);<br /></pre> 
+<br /> 
+<div>
+  Et ph&eacute;nom&egrave;ne surprenant, en parcourant la liste de r&eacute;sultats, je m'aper&ccedil;ois que les entit&eacute;s identifi&eacute;es dans une premi&egrave;re requ&ecirc;te et sont remont&eacute;es unitairement : 
+ <br /> 
+ <br /> 
+ <pre class="brush:sql">Hibernate: /* select &nbsp;new org.blep.poc.hcq.HotelDto(h) from Hotel h */<br />&nbsp; &nbsp;select hotel0_.id as col_0_0_ from Hotel hotel0_<br />Hibernate: /* load org.blep.poc.hcq.Hotel */<br />&nbsp; select hotel0_.id as id0_0_, hotel0_.address as address0_0_, hotel0_.city as city0_0_, hotel0_.name as name0_0_, hotel0_.price as price0_0_, hotel0_.state as state0_0_ from Hotel hotel0_ where hotel0_.id=?</pre> 
+ <br /> 
+ <br />Je me retrouve donc avec (nombre d'entit&eacute;s selectionn&eacute;es + 1) requ&ecirc;tes soumises &agrave; la BDD (une requ&ecirc;te de surface - shallow query- et les requ&ecirc;tes de chargement), ce qui peut vite devenir un frein pour les performances. 
+ <br /> 
+ <br />La doc Hibernate est plus que succincte sur le sujet des &quot;constructor expressions&quot;, en gros c'est support&eacute; mais il n'y a pas plus d'info qui explique ce comportement. Si la doc n'aide pas, il reste les retours d'exp&eacute;riences des autres utilisateurs dans les forums ou les blogs et en dernier lieu les bugs... &nbsp;En fouinant un peu je trouve&nbsp; 
+ <a href="https://hibernate.onjira.com/browse/HHH-544">https://hibernate.onjira.com/browse/HHH-544</a>&nbsp;qui d&eacute;crit parfaitement mon probl&egrave;me et Sir GK Himself r&eacute;pond en 2005: 
+ <br /> 
+ <blockquote class="tr_bq">
+   &nbsp;To be clear, all &quot;select new&quot; queries are considered &quot;shallow&quot; by the parser. 
+ </blockquote>La date, statut de la JIRA et la r&eacute;ponse ne permettent pas d'envisager la n&eacute;gociation sur le sujet ni aucun tuning d'ailleurs pour influer sur le comportement! Il ne reste qu'une seule autre voie, la recherche des solutions de contournement... 
+ <br /> 
+ <br />La premi&egrave;re tent&eacute;e est l'utilisation de l'API Criteria, je ne suis pas fan mais si &ccedil;a marche, comme le code reste inscrit dans JPA, pourquoi pas: 
+ <br /> 
+ <br /> 
+ <br /> 
+ <pre class="brush:java">CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();<br />CriteriaQuery&lt;HotelDto&gt; cq = criteriaBuilder.createQuery(HotelDto.class);<br />Root&lt;Hotel&gt; from = cq.from(Hotel.class);<br />cq.select(criteriaBuilder.construct(HotelDto.class, from));<br />TypedQuery&lt;HotelDto&gt; query = em.createQuery(cq);<br /></pre> 
+ <div> 
+  <br /> 
+ </div> 
+ <div>
+   Rien que de le coder j'ai mal... mais en plus la sortie SQL montre que le Criteria est interpr&eacute;t&eacute; pour g&eacute;n&eacute;rer du JPQL (tiens d'ailleurs &ccedil;a me donne une raison de plus de ne pas aimer cette API!): 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <pre class="brush:sql"><br />Hibernate: /* select new org.blep.poc.hcq.HotelDto(generatedAlias0) from Hotel as generatedAlias0 */ select hotel0_.id as col_0_0_ from Hotel hotel0_<br /></pre> 
+ <div>
+   Donc aucun int&eacute;r&ecirc;t puisque le comportement n'&eacute;volue pas. 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div>
+   La mort dans l'&acirc;me je me r&eacute;souds &agrave; aller au del&agrave; de JPA et &agrave; m'adresser directement &agrave; Hibernate et il existe effectivement un moyen de combler le besoin mais pas dans le cadre d'un constructeur: 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div> 
+  <pre class="brush:java">Query query = em.createQuery(&quot;select h as hotel from Hotel h&quot;);<br />org.hibernate.Query unwrapped = query.unwrap(org.hibernate.Query.class);<br />unwrapped.setResultTransformer(Transformers.aliasToBean(HotelDto.class));<br /></pre> 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div>
+   Je sens d'ici les picotement dans les yeux de mon lecteur (un, c'est toute mon ambition en terme d'auditoire pour le moment!), toutefois les donn&eacute;es sont obtenues en un seul SQL. Au rayon des contraintes, le DTO n'est pas peupl&eacute; par le constructeur mais par mutateur, ce qui implique qu'il doit y avoir un constructeur sans argument et que le mutateur est li&eacute; &agrave; l'alias dans le JPQL (ie le DTO doit pr&eacute;senter la m&eacute;thode setHotel(Hotel). Le fait que le DTO puisse &ecirc;tre construit sans argument ouvre la possibilit&eacute; d'avoir un objet inconsistant, ce n'est pas souhaitable mais tellement fr&eacute;quent...&nbsp; 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div>
+   Possibilit&eacute; suivante, utiliser un impl&eacute;mentation propre de Collection&lt;HotelDto&gt; encapsulant une Collection&lt;Hotel&gt; comme d&eacute;l&eacute;gu&eacute;e (code disponible sur 
+  <a href="https://github.com/bleporini/JPA-Hibernate-shallow-constructor-query/blob/master/src/main/java/org/blep/poc/hcq/HotelDtoCollection.java">https://github.com/bleporini/JPA-Hibernate-shallow-constructor-query/blob/master/src/main/java/org/blep/poc/hcq/HotelDtoCollection.java</a>). Du coup le code devient: 
+  <br /> 
+  <br /> 
+  <pre class="brush:java"><br />HotelDtoCollection hotels = new HotelDtoCollection(em.createQuery(&quot;select h from Hotel h&quot;, Hotel.class).getResultList());</pre> 
+  <br />C'est correct, ne n&eacute;cessite pas de r&eacute;v&eacute;ler une impl&eacute;mentation sous-jacente mais clairement &ccedil;a fait pas mal de code boiler plate... Ca serait pas mal de trouver quelquechose de plus &eacute;l&eacute;gant. 
+  <br /> 
+  <br />Donc voici la voie bas&eacute;e sur Google Guava: 
+  <br /> 
+  <br /> 
+  <pre class="brush:java"><br />List&lt;Hotel&gt; resultList = em.createQuery(&quot;select h from Hotel h&quot;, Hotel.class).getResultList();<br />List&lt;HotelDto&gt; dtos = Lists.transform(resultList, new Function&lt;Hotel, HotelDto&gt;() {<br />&nbsp; &nbsp; public HotelDto apply(@Nullable Hotel input) {<br />&nbsp; &nbsp; &nbsp; &nbsp; return new HotelDto(input);<br />&nbsp; &nbsp; }<br /></pre>}); 
+  <br /> 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div>
+   C'est une possibilit&eacute; aussi pertinente que celle de la collection d&eacute;l&eacute;gu&eacute;e mais nettement plus concise, la doc stipule que la liste r&eacute;sultante est peupl&eacute;e tardivement, c'est parfait! 
+  <br /> 
+  <br />C&ocirc;t&eacute; performances, pour une requ&ecirc;te ramenant 100 entit&eacute;s d'une base H2 embarqu&eacute;e, la solution du transformateur Hibernate prend 23ms, la collection d&eacute;l&eacute;gu&eacute;e 19ms et Guava 19ms sur mon poste. 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+ <div> 
+  <br /> 
+ </div> 
+</div>

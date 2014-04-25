@@ -1,0 +1,235 @@
+---
+layout: post
+title: Why Scala?
+tags: [scala]
+---
+{% include JB/setup %}
+Le geek est une esp&egrave;ce qui pr&eacute;sente un comportement addictif au renouveau perp&eacute;tuel. 
+<br /> 
+<div class="p2">
+  Les geeks se d&eacute;coupent en plusieurs castes dont une d'entre elles regroupe ceux qui codent en Java. Depuis quelques temps les membres de celle-ci souffrent car ce langage ne bouge gu&egrave;re. Pour r&eacute;pondre &agrave; ce mal, fleurissent des langages alternatifs qui s'ex&eacute;cutent tout de m&ecirc;me sur la JVM, dont un en particulier: Scala. Il entra&icirc;ne d'ailleurs la naissance de guerres de clocher au sein m&ecirc;me de la caste.&nbsp; 
+</div> 
+<div class="p2">
+  Tiraill&eacute; par le manque d'&eacute;volution (quoi je suis le seul qui n'a m&ecirc;me pas eu une demi molle en d&eacute;couvrant le diamond operator de Java7??) et curieux de comprendre ce qui d&eacute;fraie autant de passion, j'ai d&eacute;cid&eacute; de monter en comp&eacute;tence sur cette technologie (pas si nouvelle que &ccedil;a d'ailleurs - 2003). J'ai mang&eacute; le pav&eacute; de Martin Odersky 'Programming in Scala', transpir&eacute; sur les katas S-99, suivi la session propos&eacute; par Coursera et quelques mois plus tard, j'aimerais dresser mon bilan de l'exp&eacute;rience. 
+ <br /> 
+ <br /> 
+</div> 
+<div class="p2"> 
+ <h3>Ce qui m'a plu</h3> 
+</div> 
+<div class="p2"> 
+ <br />Scala est un langage permettant de r&eacute;soudre les probl&egrave;mes par l'approche fonctionnelle (mais pas exclusivement car il reste compatible avec l'orient&eacute; objet) et il m'a donc &eacute;t&eacute; n&eacute;cessaire d'appr&eacute;hender les concepts li&eacute;s &agrave; ce style de programmation. Voici un floril&egrave;ge de ce que j'en ai appr&eacute;ci&eacute;: 
+</div> 
+<div class="p2">
+  Evidemment les lambdas. Un buzzword qui fait beaucoup couler d'octets sur la toile, un des fondements de la programmation fonctionnelle, le saint graal qui doit permettre de tirer ais&eacute;ment parti des architectures multicores. J'avoue &ecirc;tre un poil perdu: les lambdas sont-elles un concept fondamental ou simplement du sucre syntaxique. Une chose est claire: le code en est plus concis et je kiffe. 
+ <br />&nbsp;Un des principaux int&eacute;r&ecirc;ts des lambdas est sont int&eacute;gration dans le SDK, donc ce n'est pas un scoop, les listes en Scala, &ccedil;a poutre. 
+ <br /> 
+ <br />La boucle for est sacr&eacute;ment revisit&eacute;e: fini les boucles imbriqu&eacute;es gr&acirc;ce &agrave; cette nouvelle syntaxe qui permet d'int&eacute;grer des produits cart&eacute;siens ainsi que filtres de fa&ccedil;on &eacute;l&eacute;gante… on a l'impression de requ&ecirc;ter les collections comme on le ferait avec des tables relationnelles. Quelques exemples sympas: 
+ <br />Produit cart&eacute;sien: 
+</div> 
+<pre class="brush: scala">scala&gt; for ( i &lt;- 1 to 2; j &lt;- List(&quot;un&quot;,&quot;deux&quot;)) yield(i,j)<br />res4: scala.collection.immutable.IndexedSeq[(Int, java.lang.String)] = Vector((1,un), (1,deux), (2,un), (2,deux))<br /><br /></pre> 
+<div class="p2">
+  Jointure 
+</div> 
+<pre class="brush: scala">scala&gt; for ( i &lt;- 1 to 2; j &lt;- List((1,&quot;un&quot;),(2,&quot;deux&quot;)) ; if i==j._1) yield(i,j)<br />res5: scala.collection.immutable.IndexedSeq[(Int, (Int, java.lang.String))] = Vector((1,(1,un)), (2,(2,deux)))<br /></pre> 
+<div class="p2"> 
+ <br /> 
+ <br />L'inf&eacute;rence de type. Il trouve tout seul: 
+</div> 
+<pre class="brush: scala">scala&gt; val i=0<br />i: Int = 0<br /></pre> 
+<div class="p2">
+  Le compilateur n'est plus malentendant et il n'est plus n&eacute;cessaire de lui r&eacute;p&eacute;ter plusieurs fois le type. Scala mise d&eacute;finitivement sur la concision du langage. 
+</div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Les fonctions partielles ou Currying. Imaginez une fonction pour laquelle seule une partie des param&egrave;tres est d&eacute;finie, mais &ccedil;a donne quoi? Une fonction qui attends le reste de param&egrave;tres. Cool non? Exemple: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; def stupidAdditionExample(i:Int)(j:Int)=i+j<br />stupidAdditionExample: (i: Int)(j: Int)Int<br /><br />scala&gt; val partial = stupidAdditionExample(2)_<br />partial: Int =&gt; Int = 
+   
+ <function1>
+    
+  <br />
+    
+  <br />scala&gt; partial(3)
+    
+  <br />res0: Int = 5
+    
+  <br />
+    
+  <br />
+   
+ </function1></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;"> 
+  <br />L'immutabilit&eacute;. Bloch en vante largement les vertus pour &eacute;viter d'avoir &agrave; poser des verrous pour synchroniser les acc&egrave;s concurrents dans Effective Java , mais franchement dans un quotidien de d&eacute;veloppement d'application web de gestion reposant sur des conteneurs et JPA, on est content de le savoir mais on a l'impression de n'&ecirc;tre que partiellement concern&eacute;. Dans Scala on ne peut pas passer &agrave; c&ocirc;t&eacute; et les variables ne deviennent qu'une possibilit&eacute; optionnelle. En plus des consid&eacute;rations techniques avanc&eacute;es par Bloch, la programmation fonctionnelle ajoute le fait que la mutabilit&eacute; des variables n'est issu d'aucun concept math&eacute;matique ou algorithmique mais est simplement le reflet de la possibilit&eacute; de modifier le contenu des registres du socle mat&eacute;riel. La mutabilit&eacute; n'est pas la r&eacute;alit&eacute; et c'est mal pour la concurrence. J'ai cru au d&eacute;but que &ccedil;a allait piquer car il faut lutter contre de vieilles habitudes et en fait non… je me suis vu contraint de faire appel &agrave; une variable une seule fois (une sale histoire d'InputStream, je ne peux rien dire de plus la cicatrice est encore fra&icirc;che). &nbsp; 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   &quot;Je te donne peut-&ecirc;tre une valeur… et peut-&ecirc;tre pas&quot;, &ccedil;a ce sont les options. L'int&eacute;r&ecirc;t n'est pas flagrant de prime abord mais du coup tous les &quot;if null else&quot; disparaissent (et les NPE de surcro&icirc;t) . De plus l'API offre la possibilit&eacute; de modifier le contenu et de d&eacute;finir des valeurs par d&eacute;faut contextuelles: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; val peutetre=Some(1)<br />peutetre: Some[Int] = Some(1)<br /><br />scala&gt; peutetre.get<br />res1: Int = 1<br /><br />scala&gt; val rien=None<br />rien: None.type = None<br /><br />scala&gt; rien.get<br />java.util.NoSuchElementException: None.get<br /><br />scala&gt; rien.getOrElse(1)<br />res3: Int = 1<br /><br />scala&gt; peutetre.map(i=&gt; &quot;valeur = &quot; + i).getOrElse(&quot;Rien&quot;)<br />res6: java.lang.String = valeur = 1<br /><br />scala&gt; rien.map(i=&gt; &quot;valeur = &quot; + i).getOrElse(&quot;Rien&quot;)<br />res7: java.lang.String = Rien<br /><br /></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;"> 
+  <br />Les applications n&eacute;cessitent souvent un singleton et les patterns compliqu&eacute;s et souvent bugg&eacute;s ont longtemps fleuri, la r&eacute;ponse de Spring a &eacute;t&eacute; de fournir des singletons de fait et enfin Java 5 a permis de mettre tout le monde d'accord gr&acirc;ce &agrave; une utilisation d&eacute;riv&eacute;e des Enum. Mais voil&agrave; si cette derni&egrave;re option est techniquement justifi&eacute;e, elle reste s&eacute;mantiquement tr&egrave;s discutable. Qu'&agrave; cela ne tienne, puisqu'il s'agit d'un besoin r&eacute;current Scala l'int&egrave;gre dans le langage avec l'object. Efficace et pertinent. 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   L'un des leitmotiv de Scala est que la r&eacute;duction du nombre de lignes de code d'une application &agrave; p&eacute;rim&egrave;tre fonctionnel constant r&eacute;duit les probabilit&eacute;s de bugs. Donc pour permettre la diminution du code &quot;boilerplate&quot;, le langage apporte une quantit&eacute; importante de sucre syntaxique. Le geek est friand par nature du sucre syntaxique. J'ai kiff&eacute;. Quelques exemples: 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   Qui n'a jamais r&ecirc;v&eacute; de la possibilit&eacute; de d&eacute;finir la structure d'un bean an&eacute;mique avec un oneliner? Les case class le permettent car seuls les membres sont d&eacute;finis, le compilateur s'occupe des assesseurs, du constructeur et des m&eacute;thodes equals/hashcode (et plus encore). 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; MyBean(2).equals(3)<br />res8: Boolean = false<br /><br />scala&gt; MyBean(2).equals(MyBean(2))<br />res9: Boolean = true<br /></pre> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;"> 
+  <br />Les placeholders paraissent de prime abord un peu rugueux mais ils deviennent vite habituels. En gros, ils permettent de ne pas d&eacute;clarer ni nommer les param&egrave;tres qu'une closure utilise en fonction de leur position. Ainsi la r&eacute;duction suivante 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; List(1,2,3).foldLeft(0)((acc,elem)=&gt;acc+elem)<br />res19: Int = 6<br /></pre>Peut s'&eacute;crire &eacute;galement: 
+<br /> 
+<pre class="brush: scala">scala&gt; List(1,2,3).foldLeft(0)(_+_)<br />res18: Int = 6<br /></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   Il y a plein d'autres utilisations possibles des placholder (ils ont &eacute;t&eacute; utilis&eacute;s pour pr&eacute;senter les fonctions partielles notamment). 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Un des atouts des case class est leur utilisation avec le pattern matching. Il s'agit d'une autre forme d'instanceOf bas&eacute; &nbsp;sur les extracteurs (tiens encore une fonctionnalit&eacute; int&eacute;gr&eacute;e aux case classes). Je vous livre en l'&eacute;tat un exemple tr&egrave;s incorrect mais qui permet une illustration succincte du concept: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; MyBean(3) match { case MyBean(i) =&gt; i+2 }<br />res20: Int = 5<br /></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   Cela fonctionne que parce que la d&eacute;finition d'une case class implique la cr&eacute;ation d'un objet compagnon qui fourni un extracteur: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; MyBean.unapply(MyBean(3))<br />res4: Option[Int] = Some(3)<br /></pre> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;"> 
+  <br />La liste pourrait s'allonger de fa&ccedil;on assez ennuyeuse: pas besoin de ';', pas besoin de parenth&egrave;ses pour les fonctions sans param&egrave;tres, contr&ocirc;le sur l'&eacute;valuation des param&egrave;tres (by name / by value), etc. Mais je vais m'en tenir l&agrave; et passer aux notes un peu plus douloureuses. 
+  <br /> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <h3>Ce qui m'a d&eacute;plu</h3> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <div style="text-align: justify;"> 
+  <br />La conversion implicite, au moyen de wrappers, est une fonctionnalit&eacute; qui permet de d&eacute;corer automatiquement les objets et par ce biais de leur ajouter des m&eacute;thodes. Cela apporte la libert&eacute; syntaxique d'un langage dynamique dans un langage bas&eacute; sur le typage. S&eacute;duisant non? Exemple: 
+ </div> 
+ <pre class="brush: scala">scala&gt; class StringWrapper(s:String){<br />     | def taille=s.length<br />     | }<br />defined class StringWrapper<br /><br />scala&gt; implicit def toWrapString(s:String)=new StringWrapper(s)<br />toWrapString: (s: String)StringWrapper<br /><br />scala&gt; &quot;yes&quot;.taille<br />res0: Int = 3<br /></pre> 
+ <div style="text-align: justify;">
+   Mais pour les activer il faut souvent les importer, de plus naviguer dans les API d'une biblioth&egrave;que tierce devient un enfer. J'aime pas. 
+  <br /> 
+  <br />La programmation fonctionnelle mise sur des conceptions bas&eacute;es sur des appels r&eacute;cursifs. Seulement voil&agrave;, la JVM est la plateforme d'ex&eacute;cution et elle n'appr&eacute;cie qu'avec mod&eacute;ration cette pratique (gare &agrave; la&nbsp;StackOverflowError). Pour contourner cette limitation, Scala sugg&egrave;re d'utiliser la 'tail recursion' qui se caract&eacute;rise par un appel r&eacute;cursif en derni&egrave;re instruction de la fonction. Cette pratique lui permet de modifier le code &agrave; la compilation en boucle for. Le b&eacute;mol est que l'abstraction du language vis &agrave; vis des consid&eacute;rations techniques est bris&eacute;e car la conception est stigmatis&eacute;e par les limites de la JVM. C'est pas sa faute mais j'aime pas. 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Variance, covariance, contravariance, nonvariance… les possibilit&eacute;s de contr&ocirc;le des param&egrave;tres de type sont compl&egrave;tes… et donc &eacute;galement complexes… Difficile de s'y retrouver sans avoir la doc ouverte au bon chapitre. Un exemple: 
+ </div> 
+</div> 
+<pre class="brush: scala">trait MapLike[A, +B, +This &lt;: MapLike[A, B, This] with Map[A, B]] extends collection.MapLike[A, B, This] withParallelizable[(A, B), ParMap[A, B]]<br /></pre> 
+<div class="p1"> 
+ <div style="text-align: justify;">
+   Le code est issu du SDK ( 
+  <a href="http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.MapLike">ici</a>) Je me m'aventurerais pas &agrave; en nier la pertinence, en revanche je suppute que l'&ecirc;tre vivant qui d&eacute;chiffre ces param&egrave;tres d'une traite est s&ucirc;rement capable de donner le nombre exact d'allumettes qui viennent de tomber par terre... 
+ </div> 
+</div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Lorsque l'on tente de d&eacute;river une case class dans une autre case class, voici le message produit par le compilateur (avec l'option deprecation): 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; case class MyBean(id:Int)<br />defined class MyBean<br /><br />scala&gt; case class MySubBean(name:String) extends MyBean(2)<br />
+   
+ <console>
+  
+    :9: warning: case class `class MySubBean' has case ancestor `class MyBean'.  
+    
+  <br />Case-to-case inheritance has potentially dangerous bugs which are unlikely to be fixed.  
+    
+  <br />You are strongly encouraged to instead use extractors to pattern match on non-leaf nodes.
+    
+  <br />
+    
+  <br />
+   
+ </console></pre> 
+<div class="p2">
+  Y a s&ucirc;rement une excellente raison, mais le message est d&eacute;routant. 
+</div> 
+<div class="p1"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Les param&egrave;tres implicites font &agrave; mes yeux partie de ces concepts qui apportent de la magie &agrave; un langage... enfin je dirais plut&ocirc;t de la sorcellerie: 
+ </div> 
+ <pre class="brush: scala">scala&gt; def imprime(implicit x:Int)=println(x)<br />imprime: (implicit x: Int)Unit<br /><br />scala&gt; implicit val test=3<br />test: Int = 3<br /><br />scala&gt; imprime<br />3<br /></pre> 
+ <div> 
+  <div style="text-align: justify;">
+    Simple dans cet exemple, mais vous vous doutez bien que les r&egrave;gles li&eacute;es ne le sont pas autant et si une autre valeur implicite tra&icirc;ne dans les parages, les choses se corsent. Bref je trouve cette fonctionnalit&eacute; dangereuse. 
+  </div> 
+ </div> 
+ <div></div> 
+ <div> 
+  <br /> 
+  <div style="text-align: justify;">
+    Un d&eacute;tail ennuyeux: le code Scala compil&eacute; l'est pour une version pr&eacute;cise de scala ce qui a notamment entra&icirc;n&eacute; l'apparition d'une nouvelle dimension dans les coordonn&eacute;es des d&eacute;pendances... 
+  </div> 
+ </div> 
+</div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   &quot;With great power comes great responsibility...&quot; Scala m'appara&icirc;t con&ccedil;u pour apporter une solution &agrave; tous les probl&egrave;mes qui ont pu &ecirc;tre lev&eacute;s dans &nbsp;les langages auparavant et tente d'int&eacute;grer toute fonctionnalit&eacute; s&eacute;duisante. Cela le rend il universel? S'il l'est, il l'est pour des d&eacute;veloppeurs universels! Je le trouve assez &eacute;litiste, ce qui me semble &ecirc;tre son principal d&eacute;faut et un frein &agrave; son adoption.&nbsp; 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+ <h3>Ma conclusion</h3> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+ <div style="text-align: justify;">
+   S'il est difficile d'attendre d'un langage d'&ecirc;tre l'&eacute;l&eacute;ment qui garanti la r&eacute;ussite d'un projet, Scala prend &agrave; sa charge des sujets sensibles tels que la concurrence, les threads et j'en passe. C'est un plus car le d&eacute;veloppeur peut augmenter son attention sur le code m&eacute;tier.&nbsp; 
+ </div> 
+ <div style="text-align: justify;">
+   C'est un langage qui m&eacute;rite sa place dans l'ecosyst&egrave;me, pas comme un leader du secteur, mais peut-&ecirc;tre comme un Concept Car ou une Formule 1, la plebe dont nous faisons partie esp&eacute;rant voir quelques unes de ses avanc&eacute;es all&eacute;chantes d&eacute;clin&eacute;es dans &nbsp;nos outils quotidiens... Et puis le langage est une chose mais qu'est il sans une stack de d&eacute;veloppement? C'est un autre sujet (to be continued)... 
+ </div> 
+</div> 
+<!--:--> 
+<!----> 
+<!----> 
+<!----> 
+<!---->

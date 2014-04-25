@@ -1,0 +1,181 @@
+---
+layout: post
+title: Why Scala&#58; La stack (1/2)
+tags: [sbt , scala , slick]
+---
+{% include JB/setup %}
+<br /> 
+<div class="p1"> 
+ <div style="text-align: justify;">
+   Dans mon 
+  <a href="http://the-babel-tower.blogspot.fr/2013/02/why-scala.html">billet pr&eacute;c&eacute;dent</a>, j'expose mon retour d'exp&eacute;rience concernant Scala. Maintenant que je poss&egrave;de le langage (enfin quelques &eacute;l&eacute;ments), que me manque-t-il pour coder une application de la vraie vie? Un outil de build, une couche pour faciliter les acc&egrave;s JDBC et un framework web me paraissent &ecirc;tre le minimum. Je vais me pencher sur les cas de 
+  <a href="http://www.scala-sbt.org/">SBT</a>, 
+  <a href="http://slick.typesafe.com/">Slick</a> et 
+  <a href="http://www.playframework.com/">Play Framework 2.1</a> (what else?). 
+ </div> 
+</div> 
+<h1>SBT</h1> 
+<div class="p1"> 
+ <div style="text-align: justify;">
+   C'est l'outil de build qui me semble le plus r&eacute;pandu pour le d&eacute;veloppement Scala. Il est incontournable pour Play Framework (la console se base dessus). Si on regarde un peu en arri&egrave;re,&nbsp; pour nous d&eacute;livrer de javac, Apache &agrave; cr&eacute;&eacute; Ant. C'&eacute;tait bien mais trop freestyle et des configurations complexes ont &eacute;t&eacute; engendr&eacute;es en masse. Qu'&agrave; cela ne tienne, puisque la gestion technique du projet n&eacute;cessite un outil plus coercitif, Apache nous apporte une fois de plus la lumi&egrave;re avec Maven (on va dire que l'ampoule a &eacute;t&eacute; viss&eacute;e &agrave; partir de Maven 2). Aujourd'hui les critiques fusent autour du manque de flexibilit&eacute;. Comme tous, j'ai du faire l'investissement autour de Maven il y a quelques ann&eacute;es, il n'est pas parfait mais je le ma&icirc;trise et il fait le taf, au prix de quelques acrobaties parfois.&nbsp; 
+ </div> 
+</div> 
+<div class="p1"> 
+ <div style="text-align: justify;">
+   Je trouve que l'outil de build est un non sujet. Que l'application soit construite avec Ant, Maven, Graddle ou des scripts shell, quelle diff&eacute;rence pour l'utilisateur? Pire: pour le code? Devoir encore passer du temps sur SBT me para&icirc;t &ecirc;tre une perte s&egrave;che et m'irrite un peu je l'avoue. Je me limite donc &agrave; des copier-coller de config et aux commandes compile, test et idea. Pas d'appr&eacute;ciation. 
+ </div> 
+</div> 
+<div class="p1"> 
+ <h1>Slick</h1> 
+</div> 
+<div class="p1"> 
+ <div style="text-align: justify;">
+   Anciennement ScalaQuery, Slick est un framework d'acc&egrave;s aux donn&eacute;es en Scala. Il propose trois voies d'acc&egrave;s:&nbsp; 
+ </div> 
+</div> 
+<div class="p1"> 
+ <br /> 
+ <ul> 
+  <li>plain SQL queries: &agrave; priori peu d'int&eacute;r&ecirc;t, je ne me suis peu attard&eacute; dessus</li> 
+  <li>lifted embedding: j'ai pr&eacute;sent&eacute; les possibilit&eacute;s de la boucle for en Scala dans mon pr&eacute;c&eacute;dent billet et notamment le sentiment que l'on peut interroger les collections comme des tables relationnelles. Et c'est ce que ce mode propose et c'est ce qui m'a d'ailleurs attir&eacute; vers Slick:</li> 
+ </ul> 
+</div> 
+<pre class="brush:scala">//Domain definition<br />      case class Supplier(id:Int,name:String)<br /><br />//DAO<br />      object Suppliers extends Table[Supplier](&quot;SUPPLIER&quot;){<br /> //Column definition<br />        def id = column[Int](&quot;id&quot;, O.PrimaryKey)<br />        def name = column[String](&quot;name&quot;)<br /><br /> //Projection definition<br />        def * = id ~ name &lt;&gt;(Supplier, Supplier.unapply _)<br />      }<br /><br />//Interrogation<br />      val q = for {<br />        s &lt; - Suppliers<br />        if s.name === &quot;my supp&quot;<br />      } yield s.id<br /><br />      q.list/* have fun here with Scala lists!*/.foreach(println)<br /></pre> 
+<div style="text-align: justify;">
+  Slick propose un troisi&egrave;me mode, direct embedding, l'exemple va vous rappeler quelqu'un: 
+</div> 
+<pre class="brush:scala">@table(name=&quot;COFFEES&quot;)<br />case class Coffee(<br /> @column(name=&quot;NAME&quot;)<br /> name : String,<br /> @column(name=&quot;PRICE&quot;)<br /> price : Double<br />)<br /></pre> 
+<div style="text-align: justify;">
+  Et l&agrave; comme j'ai pu le faire, vous &ecirc;tes en train de vous dire que c'est du JPA! Enfin &ccedil;a le sera peut &ecirc;tre un jour car la doc stipule deux bloqueurs: 
+</div> 
+<div class="p7">
+  The direct embedding currently only supports database columns, which can be mapped to either 
+ <span class="s8">String, Int, Double</span>. 
+ <i>Ouch m&ecirc;me pas les dates!</i> 
+</div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   The direct embedding currently does not feature insertion of data. WTF? On peut interroger des donn&eacute;es qu'on a pas pu ins&eacute;rer? Pas exactement, il faut utiliser un des deux autres modes pour persister. 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Mes attentes principales autour d'un outil d'acc&egrave;s aux donn&eacute;es sont de g&eacute;n&eacute;rer le SQL pour me faire r&ecirc;ver que le changement de SGBD sera sans impact sur le code et des fonctions de mapping relationnel-objet pour limiter le code boilerplate. Du coup des trois modes il n'en reste qu'un: lifted embedding. 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7">
+  Le langage de requ&ecirc;tage bas&eacute; sur la boucle for est fort s&eacute;duisant: 
+</div> 
+<div class="p7"> 
+ <div style="text-align: justify;"></div> 
+ <ul> 
+  <li>il est tr&egrave;s concis et s'int&egrave;gre agr&eacute;ablement dans le code, apr&egrave;s je ne l'ai pas challeng&eacute; avec un sch&eacute;ma de 200 tables non plus...</li> 
+  <li>il est statiquement typ&eacute;: pour avoir la m&ecirc;me chose avec JPA 2.0, il faut g&eacute;n&eacute;rer un m&eacute;ta mod&egrave;le et utiliser l'API criteria (mon royaume pour une corde et un arbre que j'aille me pendre…)</li> 
+ </ul> 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Je m&egrave;ne ces explorations par pure convenance personnelle et ce sont les technologies traditionnelles qui me permettent de ramener le pain quotidien, il est donc facile de deviner que ma r&eacute;f&eacute;rence en la mati&egrave;re est JPA. D'ailleurs dans les diff&eacute;rences fondamentales, on notera deux points marquants: 
+ </div> 
+</div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Les entit&eacute;s mapp&eacute;es ne sont pas manag&eacute;es: le framework n'a aucune id&eacute;e de la situation d'un objet du domaine au regard de son &eacute;tat en base; de plus il n'est m&ecirc;me pas obligatoire d'associer un DAO avec une classe, il peut tout aussi bien exploiter des tuples. 
+ </div> 
+</div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Les relations ne sont donc pas port&eacute;es par le mod&egrave;le m&eacute;tier mais par les DAO, ce qui implique que la navigation dans le graphe passe n&eacute;cessairement par une interrogation explicite. Imaginons l'extension de l'exemple pr&eacute;c&eacute;dent: 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<pre class="brush:scala">      object Coffees extends Table[Coffee](&quot;COFFEE&quot;){<br />        def id = column[Int](&quot;id&quot;, O.PrimaryKey)<br />        def name = column[String](&quot;name&quot;)<br />        def supplierId = column[Int](&quot;sup_id&quot;, O.NotNull)<br /><br />        def * = id ~supplierId~name &lt;&gt;(Coffee,Coffee.unapply _)<br />        def supplier = foreignKey(&quot;fk_supId&quot;, supplierId,Suppliers)(_.id)<br /><br />      }<br /><br />      (Suppliers.ddl ++ Coffees.ddl).create<br /><br />      Suppliers.insert(Supplier(1, &quot;my supp&quot;))<br /><br />      Coffees.insert(Coffee(1,1,&quot;Ristretto&quot;))<br /><br />      val q = for {<br />        c &lt; - Coffees<br />        s &lt; - c.supplier<br />      } yield (s.name, c.name)<br />      q.list.foreach(println)<br />    }<br /></pre> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   De prime abord, ces points semblent &ecirc;tre des lacunes compar&eacute;s &agrave; JPA. Mais en prenant un peu de recul, lors de la plupart (hmm… peut &ecirc;tre m&ecirc;me la totalit&eacute;?) de mes interventions sur les projets, j'ai pu observer que l'ORM &eacute;tait souvent hors de contr&ocirc;le. Oui, &quot;sans ma&icirc;trise la puissance n'est rien&quot; (j'adore), et toute la magie apport&eacute;e par l'instrumentation des classes, les invocations d'assesseurs interrogeant automatiquement la BDD, la fusion d'entit&eacute;s et j'en passe, &eacute;clipsent totalement la m&eacute;canique sous-jacente. Le r&eacute;sultat: des torrents de SQL noient litt&eacute;ralement nos bases, devant &eacute;galement faire face &agrave; des requ&ecirc;tes monstrueuses aux jointures improbables, impliquant des plans d'ex&eacute;cution moins accessibles que le Saint Graal lui m&ecirc;me, et souvent pour afficher moins de colonnes que les doigts d'une main. Ne nous trompons pas, je ne dresse pas le proc&egrave;s de JPA, une tr&egrave;s belle technologie, mais celui de ses utilisateurs. 
+ </div> 
+</div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Alors finalement, moins de fonctionnalit&eacute;s r&eacute;duit la fracture entre les d&eacute;veloppeurs et la mod&eacute;lisation relationnelle. Slick semble parvenir &agrave; ce compromis: il concilie un niveau d'abstraction acceptable en gardant &agrave; sa charge les basses besognes, telles que la g&eacute;n&eacute;ration du SQL, avec un code qui laisse l'informaticien conscient des concepts mis en oeuvre. A m&eacute;diter. 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Chers internautes, je me dois maintenant d'interrompre ce s&eacute;jour sur l'&icirc;le aux enfants pour nous ramener dans la vraie vie, alors dites au revoir &agrave; Casimir et pr&eacute;parez vous &agrave; la descente. 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   D'abord les snippets pr&eacute;sent&eacute;s sont &eacute;videmment r&eacute;sum&eacute;s dans un souci de lisibilit&eacute;. Slick exploite le c&ocirc;t&eacute; obscur de Scala (selon moi &eacute;videmment), les wrappers implicites. Pour que notre boucle for appliqu&eacute;es aux tables compile il faut importer un driver permettant d'int&eacute;grer le langage de Slick avec la source de donn&eacute;es JDBC (&agrave; l'image du dialecte Hibernate). Ensuite, il faut ouvrir ou r&eacute;cup&eacute;rer la session courante: 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<pre class="brush:scala">import Database.threadLocalSession<br />import scala.slick.driver.H2Driver.simple._<br /><br />Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {<br /> val q = for(....<br />}<br /><br /></pre> 
+<div class="p13"> 
+ <div style="text-align: justify;">
+   Admettons devoir int&eacute;grer ce code dans une application, l'URL et le driver JDBC, on peut les caser dans un fichier de conf, mais pour le driver Slick on fait quoi? On ne va pas laisser des H2Driver tra&icirc;ner dans toutes les classes, et puis c'est bon pour les tests ou les POC mais quand le temps viendra d'utiliser une vraie base on fera quoi? La solution se base sur le cake pattern qui mod&eacute;lise l'injection de d&eacute;pendance statiquement typ&eacute;e en Scala (plus de d&eacute;tails sur 
+  <a href="http://jonasboner.com/2008/10/06/real-world-scala-dependency-injection-di/">http://jonasboner.com/2008/10/06/real-world-scala-dependency-injection-di/</a>). Je vous laisse consulter l'exemple fourni sur 
+  <a href="https://github.com/slick/slick-examples/blob/master/src/main/scala/com/typesafe/slick/examples/lifted/MultiDBCakeExample.scala#L61">https://github.com/slick/slick-examples/blob/master/src/main/scala/com/typesafe/slick/examples/lifted/MultiDBCakeExample.scala#L61</a>. Il pr&eacute;sente un g&acirc;teau avec trois ingr&eacute;dients: l'encapsulation du driver Slick, le compsant d'acc&egrave;s aux donn&eacute;es et les DAO. Je le trouve nettement plus indigeste que: 
+ </div> 
+</div> 
+<pre class="brush:scala">@PersistenceContext<br />private EntityManager em;<br /><br /></pre> 
+<div class="p13">
+  Affaire de go&ucirc;t?&nbsp; 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Les exemples fournis se basent uniquement sur la session, quid de la gestion transactionnelle? En parcourant la documentation de r&eacute;f&eacute;rence, je n'ai rien trouv&eacute;. Cependant j'ai r&eacute;ussi &agrave; d&eacute;nicher qu'il fallait d'abord ouvrir une session puis regrouper toutes les commandes dans un bloc transactionnel: 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<pre class="brush:scala">Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {<br /> threadLocalSession.withTransaction{<br />  [...]<br /> }<br />} <br /><br /></pre> 
+<div class="p7"> 
+ <div style="text-align: justify;"> 
+  <br /> 
+  <div class="p1">
+    Personne ne leur &agrave; montr&eacute; @Transactionnal? Nous voil&agrave; quelques ann&eacute;es en arri&egrave;re… 
+  </div> 
+  <div class="p1"> 
+   <br /> 
+  </div> 
+  <br />Slick propose les query templates qui permettent d'ex&eacute;cuter une requ&ecirc;te plusieurs fois avec des param&egrave;tres diff&eacute;rents. Nous savons tous combien les optimiseurs SQL appr&eacute;cient cette attention et nous la rendent avec des temps d'ex&eacute;cution diminu&eacute;s. Seulement les query templates ne couvrent que l'interrogation (select), ce qui implique que les manipulations (update/delete) param&eacute;tr&eacute;es ne sont disponibles qu'au travers du mode plain SQL queries. Une lacune difficilement excusable, gageons qu'il s'agit d'un probl&egrave;me de jeunesse. 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   La documentation d'API n'a que le m&eacute;rite d'exister, les d&eacute;veloppeurs doivent respecter une des lois XP qui pr&eacute;cise que si des commentaires sont n&eacute;cessaires c'est que le code n'est pas clair… Bref, une Scala Doc qui est tout bonnement an&eacute;mique et qui daigne nous l&acirc;cher royalement une phrase de description dans quelques une des classes. 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7"> 
+ <div style="text-align: justify;">
+   Je trouve Slick prometteur, car une fois que tous les petits d&eacute;fauts de jeunesse seront combl&eacute;s, Scala b&eacute;n&eacute;ficiera d'une technologie d'acc&egrave;s aux donn&eacute;es qui sera parfaitement int&eacute;gr&eacute;e au langage. En revanche passer de la version 0.11 &agrave; la version 1.0 (releas&eacute;e il y a peu) est un peu rapide. 1.0 me para&icirc;t &ecirc;tre un jalon dans lequel les fonctionnalit&eacute;s de base sont combl&eacute;es, avec &eacute;ventuellement quelques bogues ou une int&eacute;grabilit&eacute; balbutiante apr&egrave;s tout 1.0 est un gage de jeunesse. Seulement voil&agrave;, l'embedded mode est tout simplement inexploitable et le lifted mode incomplet. N'aurait-il pas &eacute;t&eacute; plus utile au projet de finaliser le deuxi&egrave;me avant de s'aventurer sur le premier? Mais ne jetons pas le b&eacute;b&eacute; avec l'eau du bain, l'&eacute;volution de ce framework reste d&eacute;finitivement &agrave; surveiller, m&ecirc;me si son num&eacute;ro de version actuel devrait &ecirc;tre 0.8 au lieu de 1.0.&nbsp; 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p8"></div> 
+<div class="p7">
+  M'&eacute;pancher sur le cas de Play ferait un billet assez long, donc je m'arr&ecirc;te l&agrave; et vous proposerais la suite rapidement c'est promis! 
+</div>

@@ -1,0 +1,135 @@
+---
+layout: post
+title: WebServices EJB 3&#58; Trop fastoche
+tags: [web , service , j2ee , ejb]
+---
+{% include JB/setup %}
+Bon alors on va commencer par un petit tuto pour d&eacute;velopper et publier un service web &agrave; l'aide des possibilit&eacute;s offertes par Java et les EJB 3, contrairement &agrave; ce qui &eacute;tait pr&eacute;cedemment n&eacute;cessaire, c'est tr&egrave;s rapide et super facile... (ok &ccedil;a fait un peu recette de cuisine) 
+<br /> 
+<br />Pour rappel, au niveau de l'architecture, un conteneur d'application va h&eacute;berger notre service et son impl&eacute;mentation est assur&eacute;e par un EJB sans etat (stateless). 
+<br /> 
+<br />En ce qui concerne les pr&eacute;-requis, vous devez vous assurer de disposer de: 
+<ul> 
+ <li>Le JDK dans sa version 1.5<br /></li> 
+ <li> JBoss IDE 2 beta 2 (bon jamais la version stable??) disponible en bundle <a href="http://prdownloads.sourceforge.net/jboss/JBossIDE-2.0.0.Beta2-Bundle-win32.zip?download">ici</a></li> 
+ <li>JBoss AS 4.2.0GA en t&eacute;l&eacute;chargement <a href="http://sourceforge.net/project/showfiles.php?group_id=22866&amp;package_id=16942&amp;release_id=507793">ici</a></li> 
+</ul>Une fois que tout est install&eacute;, on va commencer par ouvrir JBoss IDE dans un workspace vierge et y int&eacute;grer l'installation de JBoss AS: 
+<br /> 
+<ol> 
+ <li>Ouvrir la perspective JBoss AS</li> 
+ <li>Dans la vue &quot;JBoss Server&quot; : clic droit -&gt; New server</li> 
+ <li>S&eacute;lectionner JBoss Inc/JBoss AS 4.0:<a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://2.bp.blogspot.com/_f_XZMazgnJc/Rl_qc9iZ2gI/AAAAAAAAAJE/yZt4gxUG38I/s1600-h/wsjboss.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer;" src="/assets/img/WebServices+EJB+3+Trop+fastoche/wsjboss.jpg" alt="" id="BLOGGER_PHOTO_ID_5071029488718567938" border="0" /></a></li> 
+ <li>Donner l'emplacement du serveur et s&eacute;lectionner la configuration (default sera tr&egrave;s bien pour notre tuto):<a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://1.bp.blogspot.com/_f_XZMazgnJc/Rl_wTtiZ2hI/AAAAAAAAAJM/dPfldytp7QE/s1600-h/wsjboss2.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer;" src="/assets/img/WebServices+EJB+3+Trop+fastoche/wsjboss2.jpg" alt="" id="BLOGGER_PHOTO_ID_5071035926874544658" border="0" /></a></li> 
+ <li>Dans la vue &quot;JBoss Server&quot; : clic droit sur le serveur cr&eacute;&eacute; et le lancer en debug, la sortie sur la console ne doit normalement pas contenir d'erreur et finir par:</li> 
+</ol> 
+<span style="font-family:courier new;">12:08:14,062 INFO [Server] JBoss (MX MicroKernel) [4.2.0.GA (build: SVNTag=JBoss_4_2_0_GA date=200705111440)] Started in 47s:812ms</span> 
+<br /> 
+<ol start="6"> 
+ <li>Cr&eacute;ons maintenant notre projet. il s'agit d'un projet EJB 3.0/EJB 3.0 Project:<a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://4.bp.blogspot.com/_f_XZMazgnJc/RmAQLNiZ2iI/AAAAAAAAAJU/TS0DZ8niVHA/s1600-h/wsjboss3.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer;" src="/assets/img/WebServices+EJB+3+Trop+fastoche/wsjboss3.jpg" alt="" id="BLOGGER_PHOTO_ID_5071070965217745442" border="0" /></a></li> 
+</ol>S&eacute;lectionner ensuite la configuration de serveur que nou avons pr&eacute;c&eacute;demment d&eacute;fini (default). 
+<br /> 
+<br />A la cr&eacute;ation du projet, nous rencontron l'erreur (de jeunesse?) suivante: 
+<br /> 
+<br /> 
+<span style="font-size:85%;"><span style="font-family:courier new;">Severity and Description Path Resource Location Creation Time Id<br />Project TestWS is missing required library: 'E:\j2ee\jboss-4.2.0.GA\server\default\deploy\ejb3.deployer\jboss-ejb3x.jar' TestWS Build path 1180700028078 24<br /></span></span> 
+<br />Ce qui signifie que le buildpath est configur&eacute; pour trouver le fichier jboss-ejb3x.jar dans un r&eacute;pertoire alors qu'il ne s'y trouve pas... Pas de panique, vous pouvez trouver le fuyard dans le r&eacute;pertoire $JBOSS_HOME/server/default/lib. Une fois le jar manquant copi&eacute; dans le r&eacute;pertoire attendu, demander &agrave; Eclipse de rafra&icirc;chir le contenu du projet pour que la pr&eacute;sence du fichier soit d&eacute;tect&eacute;e et l'erreur dispara&icirc;t. 
+<br /> 
+<ol start="7"> 
+ <li>Afin que les biblioth&egrave;ques n&eacute;cessaires &agrave; la cr&eacute;ation de services web JBoss soient charg&eacute;es, par un clic droit sur la racine du projet, faire appara&icirc;tre le menu contextuel et cliquer sur JBossWS/Add JBossWS nature. Une bo&icirc;te de dialogue appara&icirc;t, les options par d&eacute;faut conviennent &agrave; notre exemple:<a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://4.bp.blogspot.com/_f_XZMazgnJc/RmAVzNiZ2jI/AAAAAAAAAJc/8csagCKT9Ko/s1600-h/wsjboss4.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer;" src="/assets/img/WebServices+EJB+3+Trop+fastoche/wsjboss4.jpg" alt="" id="BLOGGER_PHOTO_ID_5071077149970651698" border="0" /></a></li> 
+ <li>Cr&eacute;ons maintenant une classe de base Hello dans le package org.tbt.wstuto:</li> 
+</ol> 
+<span style="color: rgb(160, 32, 240);font-family:courier new;font-size:85%;">package</span> 
+<span style="font-size:85%;"><span style="font-family:courier new;"> org.tbt.wstuto;</span></span> 
+<br /> 
+<pre><br /><span style="color: rgb(46, 139, 87);"><b>public</b></span> <span style="color: rgb(46, 139, 87);"><b>class</b></span> Hello {<br /><br />}<br /></pre> 
+<ol start="9"> 
+ <li>Maintenant, nous allons un peu l'agr&eacute;menter en utilisant les annotations et en ajoutant une m&eacute;thode pour notre service:</li> 
+</ol> 
+<span style="color: rgb(160, 32, 240);font-family:courier new;font-size:85%;">package</span> 
+<span style="font-size:85%;"><span style="font-family:courier new;"> org.tbt.wstuto;</span></span> 
+<br /> 
+<pre><br /><span style="color: rgb(160, 32, 240);">import</span> javax.ejb.Stateless;<br /><span style="color: rgb(160, 32, 240);">import</span> javax.jws.WebMethod;<br /><span style="color: rgb(160, 32, 240);">import</span> javax.jws.WebParam;<br /><span style="color: rgb(160, 32, 240);">import</span> javax.jws.WebService;<br /><br /><span style="color: rgb(160, 32, 240);">@Stateless</span>      <span style="color: rgb(0, 0, 255);">// C'est un EJB sans &eacute;tat</span><br /><span style="color: rgb(160, 32, 240);">@WebService</span> <span style="color: rgb(0, 0, 255);"> // C'est un service Web</span><br /><span style="color: rgb(46, 139, 87);"><b>public</b></span> <span style="color: rgb(46, 139, 87);"><b>class</b></span> Hello {<br /><span style="color: rgb(160, 32, 240);">@WebMethod</span><br /><span style="color: rgb(46, 139, 87);"><b>public</b></span> <span style="color: rgb(46, 139, 87);"><b>int</b></span> world(<span style="color: rgb(160, 32, 240);">@WebParam</span>(name=<span style="color: rgb(255, 0, 255);">&quot;param&quot;</span>)<span style="color: rgb(46, 139, 87);"><b>int</b></span> iParam){<br />       <span style="color: rgb(0, 0, 255);">// Ca c'est sp&eacute;ciale d&eacute;dicace pour VLT!</span><br />       System.out.println(<span style="color: rgb(255, 0, 255);">&quot;Goodbye cruel world...&quot;</span>);<br />       <span style="color: rgb(128, 64, 64);"><b>return</b></span> <span style="color: rgb(255, 0, 255);">0</span>;<br />}<br />}<br /></pre> 
+<br /> 
+<ol start="10"> 
+ <li>Nous allons maintenant configurer l'IDE pour cr&eacute;er notre jar gr&agrave;ce a la packaging configuration d&eacute;finie comme suit:<a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://3.bp.blogspot.com/_f_XZMazgnJc/RmAYh9iZ2kI/AAAAAAAAAJk/NGLYSQRoG0c/s1600-h/wsjboss5.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer;" src="/assets/img/WebServices+EJB+3+Trop+fastoche/wsjboss5.jpg" alt="" id="BLOGGER_PHOTO_ID_5071080152152791618" border="0" /></a></li> 
+ <li>Demander de cr&eacute;er le package par la commande Project/Run packaging configuration et le jar appara&icirc;t dans l'arborescence de votre projet.</li> 
+ <li>Reste maintenant &agrave; d&eacute;ployer votre service sur le conteneur: en perspective JBoss AS, faire glisser le jar sur notre serveur default dans la vue JBoss server afin de le faire appara&icirc;tre dans les modules. Pour finir demander la publication du jar:<a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://2.bp.blogspot.com/_f_XZMazgnJc/RmAZ9tiZ2lI/AAAAAAAAAJs/sFvvOluty7M/s1600-h/wsjboss6.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer;" src="/assets/img/WebServices+EJB+3+Trop+fastoche/wsjboss6.jpg" alt="" id="BLOGGER_PHOTO_ID_5071081728405789266" border="0" /></a></li> 
+</ol>Dans la console, devrait appara&icirc;tre: 
+<br /> 
+<span style="font-size:85%;"><span style="font-family:courier new;">14:48:40,640 INFO [TomcatDeployer] deploy, ctxPath=/HelloService, warUrl=.../tmp/deploy/TestWS.jar-ws46100.war/<br />14:48:41,109 INFO [JmxKernelAbstraction] creating wrapper delegate for: org.jboss.ejb3.stateless.StatelessContainer<br />14:48:41,140 INFO [JmxKernelAbstraction] installing MBean: jboss.j2ee:jar=TestWS.jar,name=Hello,service=EJB3 with dependencies:<br />14:48:41,625 INFO [EJBContainer] STARTED EJB: org.tbt.wstuto.Hello ejbName: Hello<br />14:48:41,671 INFO [EJB3Deployer] Deployed: file:/E:/j2ee/jboss-4.2.0.GA/server/default/deploy/TestWS.jar<br />14:48:41,703 INFO [WSDLFilePublisher] WSDL published to: file:/E:/j2ee/jboss-4.2.0.GA/server/default/data/wsdl/TestWS.jar/HelloService46098.wsdl<br />14:48:41,781 INFO [ServiceEndpointManager] WebService started: http://localhost:8080/HelloService/Hello</span></span> 
+<br /> 
+<br /> 
+<br />Nous pouvons v&eacute;rifier la pr&eacute;sence de votre service gr&agrave;ce &agrave; JBoss WS 
+<a href="http://localhost:8080/jbossws/services">http://localhost:8080/jbossws/services</a> : 
+<br /> 
+<br /> 
+<div class="pageSection"> 
+ <fieldset> 
+  <legend><b>Registered Service Endpoints</b></legend> 
+  <table style="width: 528px; height: 165px;"> 
+   <tbody> 
+    <tr> 
+     <td>ServiceEndpointID</td> 
+     <td>jboss.ws:context=HelloService,endpoint=Hello</td> 
+    </tr> 
+    <tr> 
+     <td>ServiceEndpointAddress</td> 
+     <td><a href="http://localhost:8080/HelloService/Hello?wsdl">http://localhost:8080/HelloService/Hello?wsdl</a></td> 
+    </tr> 
+    <tr> 
+     <td colspan="2"> 
+      <table class="metrics"> 
+       <tbody> 
+        <tr> 
+         <td>StartTime</td> 
+         <td>StopTime</td> 
+         <td><br /></td> 
+        </tr> 
+        <tr> 
+         <td>Fri Jun 01 14:48:41 CEST 2007</td> 
+         <td><br /></td> 
+         <td><br /></td> 
+        </tr> 
+        <tr> 
+         <td>RequestCount</td> 
+         <td>ResponseCount</td> 
+         <td>FaultCount</td> 
+        </tr> 
+        <tr> 
+         <td>0</td> 
+         <td>0</td> 
+         <td>0</td> 
+        </tr> 
+        <tr> 
+         <td>MinProcessingTime</td> 
+         <td>MaxProcessingTime</td> 
+         <td>AvgProcessingTime</td> 
+        </tr> 
+        <tr> 
+         <td>0</td> 
+         <td>0</td> 
+         <td>0</td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td colspan="3"><br /></td> 
+    </tr> 
+   </tbody> 
+  </table> 
+ </fieldset> 
+</div> 
+<br /> 
+<h2>Conclusion</h2> 
+<br />C'est une bonne illustration de l'apport des annotations: nous &eacute;conomisons ici l'&eacute;criture d'un fichier WSDL, voire d'un fichier de d&eacute;ploiement WSDD. Il n'est nullement besoin non plus d'empaqueter sous forme de war, donc pas non plus de web.xml! 
+<br /> 
+<br />Trop facile... 
+<br /> 
+<br />A noter n&eacute;anmoins qu'il semble que le format de l'URL du service soit fig&eacute;e &agrave; http://hostname/ 
+<class name="">
+  Service/ 
+ <class name="">
+   , nous avons essay&eacute; de param&eacute;trer un peu dans tous les sens les annotations sans r&eacute;sultat, si quelqu'un &agrave; les moyens d'enrichir le billet &agrave; ce sujet, n'h&eacute;sitez pas... 
+ </class> 
+</class>

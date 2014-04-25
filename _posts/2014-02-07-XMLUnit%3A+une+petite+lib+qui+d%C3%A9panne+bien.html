@@ -1,0 +1,69 @@
+---
+layout: post
+title: XMLUnit&#58; une petite lib qui dépanne bien
+tags: [junit , java , test , xml , xmlunit]
+---
+{% include JB/setup %}
+<div class="p1">
+  Aujourd'hui, vous l'aurez compris, on cause XML. Nombreux sont les syst&egrave;mes d'informations qui exploitent ce format pour &eacute;changer des donn&eacute;es ou les structurer. XML &eacute;tant assez souple dans sa repr&eacute;sentation, il peut &ecirc;tre difficile de valider dans les tests un r&eacute;sultat obtenu par rapport &agrave; un r&eacute;sultat attendu. 
+</div> 
+<div class="p1">
+  Bien s&ucirc;r, la validation au regard du sch&eacute;ma permet de faire une validation structurelle, mais &agrave; ce moment l&agrave; c'est votre marshaller et son int&eacute;gration que vous testez et non votre application &agrave; proprement parler. Si c'est le contenu et non la structure qui doit &ecirc;tre v&eacute;rifi&eacute;, quelles sont les options? 
+</div> 
+<div class="p1">
+  Vous avez &agrave; disposition les moyens &quot;d'unmarshaller&quot; le XML et vous pouvez proc&eacute;der &agrave; la v&eacute;rification par rapport aux objets du mod&egrave;le. Pas mal, mais si c'est une grappe compl&egrave;te d'objet que vous devez confronter dans un mode &quot;result vs expected&quot;, il va y avoir de la ligne de code et pas qu'un peu! 
+</div> 
+<div class="p1">
+  Vous pouvez tenter de traiter le flux de fa&ccedil;on non structur&eacute;e, sans tenir compte du XML (et encore moins des outils associ&eacute;s) et en se r&eacute;f&eacute;rant aux caract&egrave;res. Ne riez pas, je l'ai vu. Et bien entendu, le moindre changement d'encodage ou de pr&eacute;fix d'espace de nom rend votre test caduque. 
+</div> 
+<div class="p1">
+  Vous pouvez cr&eacute;er un extracteur bas&eacute; sur des expressions XPath et les comparer une &agrave; une. En fonction de la complexit&eacute; et du volume du graphe &agrave; v&eacute;rifier, m&ecirc;me remarque que pour la premi&egrave;re option, vous allez pisser de la ligne. 
+</div> 
+<div class="p2"> 
+ <br /> 
+</div> 
+<br /> 
+<div class="p1"> 
+ <a href="http://xmlunit.sourceforge.net/">XMLUnit</a> est une biblioth&egrave;que qui permet de proc&eacute;der &agrave; des comparaisons de documents XML. Ce n'est pas un projet Github (Sourceforge), le site est moche et n'utilise pas Twitter Bootstrap, l'API n'est pas sp&eacute;cialement &quot;fluent&quot; et elle n'est pas nouvelle. Le score hype est au plus bas (jeu vous le vends bien hein?), mais il fait le job avec un minimum d'effort. Je vais &eacute;viter de paraphraser la documentation, je vous invite &eacute;videmment &agrave; vous y r&eacute;f&eacute;rer, et tenter de simplement zoomer sur les points qui ont retenu mon attention. 
+ <br /> 
+ <br /> 
+ <div class="p1">
+   La base (noter l'espace sur le deuxi&egrave;me arbre): 
+  <br /> 
+  <br /> 
+ </div> 
+</div> 
+<pre class="brush: java">  assertXMLEqual(&quot;&lt;root&gt;&lt;value&gt;test&lt;/value&gt;&lt;/root&gt;&quot;,<br />                &quot;&lt;root &gt;&lt;value&gt;test&lt;/value&gt;&lt;/root&gt;&quot;);<br /></pre> 
+<div class="p1"> 
+ <br /> 
+ <div class="p1">
+   Revenons sur la premi&egrave;re option: le projet comprend une couche qui permet d'int&eacute;grer le document dans le mod&egrave;le m&eacute;tier. Mieux, les m&eacute;thodes equals sont impl&eacute;ment&eacute;es de fa&ccedil;on &agrave; prendre en compte l'int&eacute;gralit&eacute; du graphe contenu. Du coup la comparaison en est simplifi&eacute;e et en plus c'est le code de prod qui permet de faire la v&eacute;rification et le test est typ&eacute; m&eacute;tier, &eacute;videmment s'il n'y a pas match vous ne saurez pas d'o&ugrave; &ccedil;a vient.&nbsp; 
+ </div> 
+ <br /> 
+ <div class="p1">
+   Imaginons maintenant qu'une partie des valeurs du graphe soit purement technique et difficilement reproductible, telle qu'un timestamp indiquant la date de g&eacute;n&eacute;ration, exit l'utilisation d'equals et il est temps de se r&eacute;signer &agrave; pisser du code. 
+  <br /> 
+  <br /> 
+  <br /> 
+  <div class="p1">
+    C'est l&agrave; qu'XMLUnit apporte un plus: il est possible d'avoir le contr&ocirc;le sur les diff&eacute;rences relev&eacute;es par le moteur gr&acirc;ce &agrave; des listeners: 
+  </div> 
+  <div class="p1"> 
+   <br /> 
+  </div> 
+  <div class="p1"> 
+   <br /> 
+  </div> 
+  <pre class="brush: java">        final DifferenceListener dl = new DifferenceListener() {<br />            @Override<br />            public int differenceFound(Difference difference) {<br />                if(difference.getControlNodeDetail() == null ||<br />                        difference.getControlNodeDetail().getNode() == null ||<br />                        difference.getControlNodeDetail().getNode().getParentNode() == null)<br />                    return RETURN_ACCEPT_DIFFERENCE;<br />                else if (difference.getControlNodeDetail().getNode().getParentNode().getNodeName().equals(&quot;timestamp&quot;))<br />                    return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;<br />                return RETURN_ACCEPT_DIFFERENCE;<br />            }<br /><br />            @Override<br />            public void skippedComparison(Node control, Node test) { }<br />        };<br /><br />        final Diff diff = new Diff(control, shouldBeSimilar);<br />        diff.overrideDifferenceListener(dl);<br />        assertXMLEqual(diff, true);<br /><br /></pre> 
+  <div class="p1"> 
+   <br /> 
+   <div class="p1">
+     Je vous ai pr&eacute;par&eacute; un Gist pour illustrer l'utilisation:&nbsp; 
+    <a href="https://gist.github.com/bleporini/6315811"><span class="s1">https://gist.github.com/bleporini/631581</span></a> 
+   </div> 
+  </div> 
+ </div> 
+</div> 
+<div class="p1"> 
+ <br /> 
+</div>

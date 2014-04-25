@@ -1,0 +1,22 @@
+---
+layout: post
+title: Hibernate&#58; valeur des paramètres et log
+tags: []
+---
+{% include JB/setup %}
+Toujours gal&egrave;re de d'analyser les logs d'une appli utilisant Hibernate car les requ&ecirc;tes sont param&eacute;tr&eacute;es (heureusement) et les param&egrave;tres ne sont pas directement accessible (on voit des '?' en lieu et place des valeurs dans les clause where). 
+<br /> 
+<br />Pour y rem&eacute;dier, rien de plus simple, il faut activer les loggers d'Hibernate qui journalisent ces informations. Donc dans log4j.properties (ou sa version XML), placer la directive suivante: 
+<br /> 
+<br /> 
+<span class="Apple-style-span" style="background-color: #cccccc;"><span class="Apple-style-span" style="font-family: 'Courier New', Courier, monospace;">log4j.category.org.hibernate.type.descriptor.sql=TRACE</span></span> 
+<br /> 
+<br />Cela permettra de trouver dans les logs les messages suivants pour chaque requ&ecirc;te param&eacute;tr&eacute;e envoy&eacute;e par Hibernate: 
+<br /> 
+<br /> 
+<br /> 
+<span class="Apple-style-span" style="background-color: #cccccc; font-family: 'Courier New', Courier, monospace;">4000 [main] TRACE org.hibernate.type.descriptor.sql.BasicBinder &nbsp;- binding parameter [1] as [BIGINT] - 1295864313859</span> 
+<br /> 
+<span class="Apple-style-span" style="background-color: #cccccc; font-family: 'Courier New', Courier, monospace;">4000 [main] TRACE org.hibernate.type.descriptor.sql.BasicBinder &nbsp;- binding parameter [2] as [TIMESTAMP] - Mon Jan 24 11:18:33 CET 2011</span> 
+<br /> 
+<span class="Apple-style-span" style="background-color: #cccccc; font-family: 'Courier New', Courier, monospace;">4000 [main] TRACE org.hibernate.type.descriptor.sql.BasicBinder &nbsp;- binding parameter [3] as [BIGINT] - 1295864313843</span>

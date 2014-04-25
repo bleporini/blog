@@ -1,0 +1,22 @@
+---
+layout: post
+title: Aspirer un site avec wget
+tags: [wget]
+---
+{% include JB/setup %}
+Ce matin je voulais pouvoir acc&eacute;der &agrave; la documentation GWT offline, mais Google ne propose pas cette option, alors j'ai essay&eacute; de r&eacute;cup&eacute;rer le maximum d'informations avec wget. 
+<br /> 
+<br />Voici les options que j'ai choisi et pourquoi je les ai choisies: 
+<br /> 
+<br /> 
+<span class="Apple-style-span" style="font-family: 'Courier New', Courier, monospace;">$ wget -nc -k -q -r -p -L -R community.html http://code.google.com/webtoolkit/doc/latest/</span> 
+<br /> 
+<br />-nc: no clobber: pour que chaque ressource ne soit t&eacute;l&eacute;charg&eacute;e qu'une seule fois 
+<br />-k : pour que les liens soient transform&eacute;s en liens locaux de mani&egrave;re &agrave; faciliter la consultation locale 
+<br />-q : pour que l'affichage sur la console ne prenne pas plus de temps que le t&eacute;l&eacute;chargement lui m&ecirc;me! 
+<br />-p : pour que toutes les ressources n&eacute;cessaire &agrave; chaque page soit &eacute;galement t&eacute;l&eacute;charg&eacute;es 
+<br />-L: pour &eacute;viter de t&eacute;l&eacute;charger tout Internet 
+<br />-R: je ne voulais pas community car j'avais peur de t&eacute;l&eacute;charger tout le forum! 
+<br />-r : recursive... of course 
+<br /> 
+<br />Voil&agrave;, c'est une note de coin de table, n'h&eacute;sitez pas &agrave; apporter des pr&eacute;cisions si elle vous semble incompl&egrave;te.

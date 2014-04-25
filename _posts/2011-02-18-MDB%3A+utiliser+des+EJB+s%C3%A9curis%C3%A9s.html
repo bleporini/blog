@@ -1,0 +1,78 @@
+---
+layout: post
+title: MDB&#58; utiliser des EJB sécurisés
+tags: [java , mdb , ejb , javaee , sécurité]
+---
+{% include JB/setup %}
+<br />Allez encore un petit billet sur la s&eacute;curit&eacute; et les MDB. 
+<br />Lorsqu'un MDB re&ccedil;oit un message, il peut arriver (et m&ecirc;me dans la plupart des cas!) qu'il doive consommer des services qui sont expos&eacute;s par d'autres EJB. Supposons que l'EJB en question comprenne un contr&ocirc;le d'acc&egrave;s sur ses m&eacute;thodes: 
+<br /> 
+<br /> 
+<pre class="brush:java"><br />@Stateless<br />@Local(LocalMyService.class)<br />@DeclareRoles(&quot;authenticated&quot;)<br />@RolesAllowed(&quot;authenticated&quot;)<br />public class MyServiceImpl implements LocalMyService {<br /></pre> 
+<br /> 
+<br />... et que ce service est inject&eacute; dans un MDB: 
+<br /> 
+<br /> 
+<pre class="brush:java"><br />@MessageDriven(activationConfig = {<br />        @ActivationConfigProperty(propertyName = &quot;user&quot;,<br />                propertyValue = &quot;mdbuser&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;password&quot;,<br />                propertyValue = &quot;mdbpassword&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;acknowledgeMode&quot;,<br />                propertyValue = &quot;Auto-acknowledge&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;destinationType&quot;,<br />                propertyValue = &quot;javax.jms.Queue&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;destination&quot;,<br />                propertyValue = &quot;/queue/myQueue&quot;)<br />})<br />public class MyMDB implements MessageListener {<br />    @EJB<br />    private LocalMyService service;<br /><br />    @Override<br />    public void onMessage(Message message) {<br />             [...]<br />             service.myMethod();</pre> 
+<br /> 
+<br /> 
+<div> 
+ <br /> 
+</div> 
+<div>
+  L&agrave; l'affaire se corse car les messages JMS n'embarquent pas de contexte de s&eacute;curit&eacute; (apr&egrave;s recherche et sauf erreur de ma part), et lors de la r&eacute;ception d'un message le MDB se verra l'acc&egrave;s refus&eacute; au service. Et bien c'est 
+ <i><b>presque </b></i>pas grave, car la spec EJB couvre ce probl&egrave;me et permet la substitution de r&ocirc;le avec l'annotation javax.annotation.security.@RunAs qui prend en param&egrave;tre le nom du r&ocirc;le &agrave; donner au bean (ici le MDB): 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div> 
+ <br /> 
+ <pre class="brush:java">@MessageDriven(activationConfig = {<br />        @ActivationConfigProperty(propertyName = &quot;user&quot;,<br />                propertyValue = &quot;mdbuser&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;password&quot;,<br />                propertyValue = &quot;mdbpassword&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;acknowledgeMode&quot;,<br />                propertyValue = &quot;Auto-acknowledge&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;destinationType&quot;,<br />                propertyValue = &quot;javax.jms.Queue&quot;),<br />        @ActivationConfigProperty(propertyName = &quot;destination&quot;,<br />                propertyValue = &quot;/queue/myQueue&quot;)<br />})<br />@RunAs(&quot;authenticated&quot;)<br />public class MyMDB implements MessageListener {<br />    @EJB<br />    private LocalMyService service;<br /><br />    @Override<br />    public void onMessage(Message message) {<br />             [...]<br />             service.myMethod();</pre> 
+ <br /> 
+ <br /> 
+ <br /> 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div>
+  Il est int&eacute;ressant de noter que j'ai &eacute;crit &quot; 
+ <b><i>presque </i></b>pas grave&quot;! Presque, car le conteneur JEE s&eacute;lectionn&eacute; pour le projet en question &eacute;tait JBoss 6.0.0.Final qui est directement impact&eacute; par le bug&nbsp; 
+ <a href="https://issues.jboss.org/browse/EJBTHREE-1945">EJBTHREE-1945</a>. Le sujet de bug est que le r&ocirc;le est correctement substitu&eacute; dans le premier appel de m&eacute;thode s&eacute;curis&eacute;, mais si cette m&eacute;thode fait elle-m&ecirc;me appel &agrave; une autre m&eacute;thode s&eacute;curis&eacute;e , le r&ocirc;le est perdu... autant dire que tout l'int&eacute;r&ecirc;t de RunAs est caduque!&nbsp; 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div>
+  J'ai donc demand&eacute; s'il existait un moyen de contournement et je me suis inspir&eacute; de la r&eacute;ponse pour mon besoin en cr&eacute;ant un intercepteur assign&eacute; au MDB qui authentifie le MDB avant l'invocation de la m&eacute;thode onMessage: 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div> 
+ <span class="Apple-style-span" style="font-family: monospace;"></span> 
+ <br /> 
+ <pre class="brush:java">public class RunAsInterceptor {<br />    @AroundInvoke<br />    public Object intercept(InvocationContext ctx) throws Throwable {<br />        SecurityClient securityClient = null;<br /><br />        try {<br />            securityClient = SecurityClientFactory.getSecurityClient();<br />            securityClient.setSimple(userName, password);<br />            securityClient.login();<br /><br />            return ctx.proceed();<br /><br />        } finally {<br />            if (securityClient != null) {<br />                securityClient.logout();<br />            }<br />        }<br />    }<br />}</pre> 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div>
+  L'ombre au tableau est qu'une classe hors spec JEE issue de l'API propre &agrave; JBoss est impliqu&eacute;e (SecurityClient), je n'ai pas pouss&eacute; pour trouver un moyen d'authentification avec les outils JEE stricts, si quelqu'un a &ccedil;a en stock, je suis preneur! Je vous laisse le soin de d&eacute;finir comment param&eacute;trer userName et password, moi je l'ai fait avec le chargement de propri&eacute;t&eacute;s dans le constructeur sans arguments.&nbsp; 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div>
+  L'utilisation dans le MDB: 
+</div> 
+<div> 
+ <br /> 
+</div> 
+<div> 
+ <pre class="brush:java">@MessageDriven(activationConfig = {<br />[...]<br />})<br />@Interceptors({RunAsInterceptor.class})<br />public class MyMDB implements MessageListener {</pre> 
+</div> 
+<br />L'avantage de cette conception est que lorsque les gens de JBoss se d&eacute;cideront &agrave; r&eacute;soudre ce probl&egrave;me qui date de 2009, il n'y aura qu'&agrave; d&eacute;gager l'intercepteur et le remplacer par @Runas! 
+<br /> 
+<br />Mais bon, c'est la tour de Babel!

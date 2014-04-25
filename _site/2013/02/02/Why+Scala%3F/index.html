@@ -1,0 +1,909 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Why Scala?</title>
+    
+    <meta name="author" content="Brice LEPORINI">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <link href="/assets/css/tbt.css" rel="stylesheet">
+      <link href="/assets/themes/bootstrap/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <link href="assets/css/github.css" rel="stylesheet">
+
+      <!--SYNTAX HIGHLIGHTER BEGINS -->
+      <link href='/assets/css/shCore.css' rel='stylesheet' type='text/css'/>
+      <link href='/assets/css/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+      <script src='/assets/js/sh/shCore.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushCpp.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushCSharp.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushCss.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushJava.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushJScript.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushPhp.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushPython.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushRuby.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushSql.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushVb.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushXml.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushPerl.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushScala.js' type='text/javascript'></script>
+      <script src='/assets/js/sh/shBrushBash.js' type='text/javascript'></script>
+      <script language='javascript'>
+          SyntaxHighlighter.config.bloggerMode = true;
+          SyntaxHighlighter.config.clipboardSwf = 'http://alexgorbatchev.com/pub/sh/current/scripts/clipboard.swf';
+          SyntaxHighlighter.all();
+      </script>
+
+      <!--SYNTAX HIGHLIGHTER ENDS-->
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
+
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+  <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">The Babel Tower</a>
+          </div>
+
+          <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul class="nav navbar-nav">
+                  
+                  
+                  
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+              </ul>
+          </div>
+      </div>
+  </nav>
+
+  <div class="container">
+      <div class="row">
+          <div class="col-md-3 hidden-xs hidden-sm">
+              <div class="well">
+                  <div class="nav nav-stacked side-bar">
+
+                      <img src="/assets/img/gravatar.jpeg" alt="gravatar">
+
+                      <a href="https://twitter.com/blep" class="twitter-follow-button" data-show-count="false" data-lang="fr" data-size="large">Suivre @blep</a>
+                      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+                      
+                      
+
+
+<ul class="post-collate-side">
+  
+    
+    
+    
+    
+  
+    
+      <li><a data-toggle="collapse" href="#ul2014">2014</a>
+        <ul class="collapse post-collate-side" id="ul2014">
+            <li>April
+             <ul>
+    
+  
+    <li><span>2014-04-25</span> &raquo; <a href="/2014/04/25/test-post">test post</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>February</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2014-02-07</span> &raquo; <a href="/2014/02/07/XMLUnit%253A%2Bune%2Bpetite%2Blib%2Bqui%2Bd%25C3%25A9panne%2Bbien">XMLUnit&#58; une petite lib qui dépanne bien</a></li>
+  
+    
+      
+             </ul></li>
+         </ul></li>
+      <li><a data-toggle="collapse" href="#ul2013">2013</a>
+        <ul class="collapse" id="ul2013">
+            <li>August
+             <ul>
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2013-08-21</span> &raquo; <a href="/2013/08/21/JVM%253A%2BLe%2Bprix%2Bde%2Bl%2527immutabilit%25C3%25A9">JVM&#58; Le prix de l'immutabilité</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>April</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2013-04-19</span> &raquo; <a href="/2013/04/19/Why%2BScala%253A%2BLa%2Bstack%2B%25282%252F2%2529">Why Scala&#58; La stack (2/2)</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>March</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2013-03-31</span> &raquo; <a href="/2013/03/31/Retour%2Bsur%2BDevoxxFr%2B2013">Retour sur DevoxxFr 2013</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>February</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2013-02-22</span> &raquo; <a href="/2013/02/22/Why%2BScala%253A%2BLa%2Bstack%2B%25281%252F2%2529">Why Scala&#58; La stack (1/2)</a></li>
+  
+    
+          
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2013-02-02</span> &raquo; <a href="/2013/02/02/Why%2BScala%253F">Why Scala?</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>January</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2013-01-06</span> &raquo; <a href="/2013/01/06/AngularJS%2B%252B%2BPlay%2521%2BFramework%253A%2BAuthentification">AngularJS + Play! Framework&#58; Authentification</a></li>
+  
+    
+      
+             </ul></li>
+         </ul></li>
+      <li><a data-toggle="collapse" href="#ul2012">2012</a>
+        <ul class="collapse" id="ul2012">
+            <li>October
+             <ul>
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2012-10-27</span> &raquo; <a href="/2012/10/27/Taille%2Bde%2Bsession%2BHTTP">Taille de session HTTP</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>August</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2012-08-10</span> &raquo; <a href="/2012/08/10/Java%2Bet%2BVMWare">Java et VMWare</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>March</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2012-03-16</span> &raquo; <a href="/2012/03/16/JPA%252C%2BHibernate%2Bet%2Brequ%25C3%25AAte%2Bconstructeur">JPA, Hibernate et requête constructeur</a></li>
+  
+    
+      
+             </ul></li>
+         </ul></li>
+      <li><a data-toggle="collapse" href="#ul2011">2011</a>
+        <ul class="collapse" id="ul2011">
+            <li>May
+             <ul>
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-05-19</span> &raquo; <a href="/2011/05/19/Cr%25C3%25A9ation%2Bd%2527une%2Bmini%2BPKI">Création d'une mini PKI</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>February</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-02-26</span> &raquo; <a href="/2011/02/26/MVP%2Bet%2BGWT">MVP et GWT</a></li>
+  
+    
+          
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-02-18</span> &raquo; <a href="/2011/02/18/Message%2BDriven%2BBean%253A%2Bconfiguration%2Bde%2Bl%2527acc%25C3%25A8s%2B%25C3%25A0%2Bune%2BDestination%2Bs%25C3%25A9curis%25C3%25A9e">Message Driven Bean&#58; configuration de l'accès à une Destination sécurisée</a></li>
+  
+    
+          
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-02-18</span> &raquo; <a href="/2011/02/18/MDB%253A%2Butiliser%2Bdes%2BEJB%2Bs%25C3%25A9curis%25C3%25A9s">MDB&#58; utiliser des EJB sécurisés</a></li>
+  
+    
+          
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-02-10</span> &raquo; <a href="/2011/02/10/Aspirer%2Bun%2Bsite%2Bavec%2Bwget">Aspirer un site avec wget</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>January</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-01-31</span> &raquo; <a href="/2011/01/31/Maven%2BSurefire%253A%2BLancer%2Bun%2Bseul%2Btest">Maven Surefire&#58; Lancer un seul test</a></li>
+  
+    
+          
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2011-01-24</span> &raquo; <a href="/2011/01/24/Hibernate%253A%2Bvaleur%2Bdes%2Bparam%25C3%25A8tres%2Bet%2Blog">Hibernate&#58; valeur des paramètres et log</a></li>
+  
+    
+      
+             </ul></li>
+         </ul></li>
+      <li><a data-toggle="collapse" href="#ul2008">2008</a>
+        <ul class="collapse" id="ul2008">
+            <li>December
+             <ul>
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2008-12-24</span> &raquo; <a href="/2008/12/24/Windows%2Bet%2Bles%2Bvariables%2Bd%2527environnement">Windows et les variables d'environnement</a></li>
+  
+    
+      
+             </ul></li>
+         </ul></li>
+      <li><a data-toggle="collapse" href="#ul2007">2007</a>
+        <ul class="collapse" id="ul2007">
+            <li>June
+             <ul>
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2007-06-01</span> &raquo; <a href="/2007/06/01/WebServices%2BEJB%2B3%253A%2BTrop%2Bfastoche">WebServices EJB 3&#58; Trop fastoche</a></li>
+  
+    
+          
+        
+            </ul></li>
+          <li>May</li>
+          <ul>
+        
+      
+    
+  
+    
+    
+    
+    
+  
+    
+  
+    <li><span>2007-05-09</span> &raquo; <a href="/2007/05/09/Premier">Premier</a></li>
+  
+    
+             </ul></li>
+         </ul></li>
+     </ul>
+    
+  
+
+
+
+
+                      <span style='font-size: 130%'><a href='tags.html#mdb-ref'>mdb</a></span>
+<span style='font-size: 65%'><a href='tags.html#maven-ref'>maven</a></span>
+<span style='font-size: 65%'><a href='tags.html#profiling-ref'>profiling</a></span>
+<span style='font-size: 65%'><a href='tags.html#service-ref'>service</a></span>
+<span style='font-size: 65%'><a href='tags.html#web-ref'>web</a></span>
+<span style='font-size: 65%'><a href='tags.html#xml-ref'>xml</a></span>
+<span style='font-size: 65%'><a href='tags.html#junit-ref'>junit</a></span>
+<span style='font-size: 65%'><a href='tags.html#windows-ref'>windows</a></span>
+<span style='font-size: 65%'><a href='tags.html#jvm-ref'>jvm</a></span>
+<span style='font-size: 65%'><a href='tags.html#mvp-ref'>mvp</a></span>
+<span style='font-size: 65%'><a href='tags.html#wget-ref'>wget</a></span>
+<span style='font-size: 65%'><a href='tags.html#hibernate-ref'>hibernate</a></span>
+<span style='font-size: 458%'><a href='tags.html#java-ref'>java</a></span>
+<span style='font-size: 65%'><a href='tags.html#j2ee-ref'>j2ee</a></span>
+<span style='font-size: 65%'><a href='tags.html#xmlunit-ref'>xmlunit</a></span>
+<span style='font-size: 65%'><a href='tags.html#slick-ref'>slick</a></span>
+<span style='font-size: 130%'><a href='tags.html#play-ref'>play</a></span>
+<span style='font-size: 65%'><a href='tags.html#guava-ref'>guava</a></span>
+<span style='font-size: 130%'><a href='tags.html#javaee-ref'>javaee</a></span>
+<span style='font-size: 130%'><a href='tags.html#test-ref'>test</a></span>
+<span style='font-size: 65%'><a href='tags.html#devoxxfr13-ref'>devoxxfr13</a></span>
+<span style='font-size: 65%'><a href='tags.html#gc-ref'>gc</a></span>
+<span style='font-size: 130%'><a href='tags.html#javascript-ref'>javascript</a></span>
+<span style='font-size: 65%'><a href='tags.html#authentification-ref'>authentification</a></span>
+<span style='font-size: 130%'><a href='tags.html#sécurité-ref'>sécurité</a></span>
+<span style='font-size: 65%'><a href='tags.html#mutabilité-ref'>mutabilité</a></span>
+<span style='font-size: 392%'><a href='tags.html#scala-ref'>scala</a></span>
+<span style='font-size: 65%'><a href='tags.html#angularjs-ref'>angularjs</a></span>
+<span style='font-size: 65%'><a href='tags.html#jpa-ref'>jpa</a></span>
+<span style='font-size: 65%'><a href='tags.html#gwt-ref'>gwt</a></span>
+<span style='font-size: 196%'><a href='tags.html#ejb-ref'>ejb</a></span>
+<span style='font-size: 65%'><a href='tags.html#immutabilité-ref'>immutabilité</a></span>
+<span style='font-size: 65%'><a href='tags.html#bigdata-ref'>bigdata</a></span>
+<span style='font-size: 65%'><a href='tags.html#sbt-ref'>sbt</a></span>
+<span style='font-size: 65%'><a href='tags.html#visualvm-ref'>visualvm</a></span>
+<span style='font-size: 65%'><a href='tags.html#ssl-ref'>ssl</a></span>
+
+
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-9">
+              
+<div class="page-header">
+  <h1>Why Scala? </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-md-12">
+    <div class="date">
+      <span>2013-02-02</span>
+    </div>
+    <div class="content">
+      
+Le geek est une esp&egrave;ce qui pr&eacute;sente un comportement addictif au renouveau perp&eacute;tuel. 
+<br /> 
+<div class="p2">
+  Les geeks se d&eacute;coupent en plusieurs castes dont une d'entre elles regroupe ceux qui codent en Java. Depuis quelques temps les membres de celle-ci souffrent car ce langage ne bouge gu&egrave;re. Pour r&eacute;pondre &agrave; ce mal, fleurissent des langages alternatifs qui s'ex&eacute;cutent tout de m&ecirc;me sur la JVM, dont un en particulier: Scala. Il entra&icirc;ne d'ailleurs la naissance de guerres de clocher au sein m&ecirc;me de la caste.&nbsp; 
+</div> 
+<div class="p2">
+  Tiraill&eacute; par le manque d'&eacute;volution (quoi je suis le seul qui n'a m&ecirc;me pas eu une demi molle en d&eacute;couvrant le diamond operator de Java7??) et curieux de comprendre ce qui d&eacute;fraie autant de passion, j'ai d&eacute;cid&eacute; de monter en comp&eacute;tence sur cette technologie (pas si nouvelle que &ccedil;a d'ailleurs - 2003). J'ai mang&eacute; le pav&eacute; de Martin Odersky 'Programming in Scala', transpir&eacute; sur les katas S-99, suivi la session propos&eacute; par Coursera et quelques mois plus tard, j'aimerais dresser mon bilan de l'exp&eacute;rience. 
+ <br /> 
+ <br /> 
+</div> 
+<div class="p2"> 
+ <h3>Ce qui m'a plu</h3> 
+</div> 
+<div class="p2"> 
+ <br />Scala est un langage permettant de r&eacute;soudre les probl&egrave;mes par l'approche fonctionnelle (mais pas exclusivement car il reste compatible avec l'orient&eacute; objet) et il m'a donc &eacute;t&eacute; n&eacute;cessaire d'appr&eacute;hender les concepts li&eacute;s &agrave; ce style de programmation. Voici un floril&egrave;ge de ce que j'en ai appr&eacute;ci&eacute;: 
+</div> 
+<div class="p2">
+  Evidemment les lambdas. Un buzzword qui fait beaucoup couler d'octets sur la toile, un des fondements de la programmation fonctionnelle, le saint graal qui doit permettre de tirer ais&eacute;ment parti des architectures multicores. J'avoue &ecirc;tre un poil perdu: les lambdas sont-elles un concept fondamental ou simplement du sucre syntaxique. Une chose est claire: le code en est plus concis et je kiffe. 
+ <br />&nbsp;Un des principaux int&eacute;r&ecirc;ts des lambdas est sont int&eacute;gration dans le SDK, donc ce n'est pas un scoop, les listes en Scala, &ccedil;a poutre. 
+ <br /> 
+ <br />La boucle for est sacr&eacute;ment revisit&eacute;e: fini les boucles imbriqu&eacute;es gr&acirc;ce &agrave; cette nouvelle syntaxe qui permet d'int&eacute;grer des produits cart&eacute;siens ainsi que filtres de fa&ccedil;on &eacute;l&eacute;gante… on a l'impression de requ&ecirc;ter les collections comme on le ferait avec des tables relationnelles. Quelques exemples sympas: 
+ <br />Produit cart&eacute;sien: 
+</div> 
+<pre class="brush: scala">scala&gt; for ( i &lt;- 1 to 2; j &lt;- List(&quot;un&quot;,&quot;deux&quot;)) yield(i,j)<br />res4: scala.collection.immutable.IndexedSeq[(Int, java.lang.String)] = Vector((1,un), (1,deux), (2,un), (2,deux))<br /><br /></pre> 
+<div class="p2">
+  Jointure 
+</div> 
+<pre class="brush: scala">scala&gt; for ( i &lt;- 1 to 2; j &lt;- List((1,&quot;un&quot;),(2,&quot;deux&quot;)) ; if i==j._1) yield(i,j)<br />res5: scala.collection.immutable.IndexedSeq[(Int, (Int, java.lang.String))] = Vector((1,(1,un)), (2,(2,deux)))<br /></pre> 
+<div class="p2"> 
+ <br /> 
+ <br />L'inf&eacute;rence de type. Il trouve tout seul: 
+</div> 
+<pre class="brush: scala">scala&gt; val i=0<br />i: Int = 0<br /></pre> 
+<div class="p2">
+  Le compilateur n'est plus malentendant et il n'est plus n&eacute;cessaire de lui r&eacute;p&eacute;ter plusieurs fois le type. Scala mise d&eacute;finitivement sur la concision du langage. 
+</div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Les fonctions partielles ou Currying. Imaginez une fonction pour laquelle seule une partie des param&egrave;tres est d&eacute;finie, mais &ccedil;a donne quoi? Une fonction qui attends le reste de param&egrave;tres. Cool non? Exemple: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; def stupidAdditionExample(i:Int)(j:Int)=i+j<br />stupidAdditionExample: (i: Int)(j: Int)Int<br /><br />scala&gt; val partial = stupidAdditionExample(2)_<br />partial: Int =&gt; Int = 
+   
+ <function1>
+    
+  <br />
+    
+  <br />scala&gt; partial(3)
+    
+  <br />res0: Int = 5
+    
+  <br />
+    
+  <br />
+   
+ </function1></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;"> 
+  <br />L'immutabilit&eacute;. Bloch en vante largement les vertus pour &eacute;viter d'avoir &agrave; poser des verrous pour synchroniser les acc&egrave;s concurrents dans Effective Java , mais franchement dans un quotidien de d&eacute;veloppement d'application web de gestion reposant sur des conteneurs et JPA, on est content de le savoir mais on a l'impression de n'&ecirc;tre que partiellement concern&eacute;. Dans Scala on ne peut pas passer &agrave; c&ocirc;t&eacute; et les variables ne deviennent qu'une possibilit&eacute; optionnelle. En plus des consid&eacute;rations techniques avanc&eacute;es par Bloch, la programmation fonctionnelle ajoute le fait que la mutabilit&eacute; des variables n'est issu d'aucun concept math&eacute;matique ou algorithmique mais est simplement le reflet de la possibilit&eacute; de modifier le contenu des registres du socle mat&eacute;riel. La mutabilit&eacute; n'est pas la r&eacute;alit&eacute; et c'est mal pour la concurrence. J'ai cru au d&eacute;but que &ccedil;a allait piquer car il faut lutter contre de vieilles habitudes et en fait non… je me suis vu contraint de faire appel &agrave; une variable une seule fois (une sale histoire d'InputStream, je ne peux rien dire de plus la cicatrice est encore fra&icirc;che). &nbsp; 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   &quot;Je te donne peut-&ecirc;tre une valeur… et peut-&ecirc;tre pas&quot;, &ccedil;a ce sont les options. L'int&eacute;r&ecirc;t n'est pas flagrant de prime abord mais du coup tous les &quot;if null else&quot; disparaissent (et les NPE de surcro&icirc;t) . De plus l'API offre la possibilit&eacute; de modifier le contenu et de d&eacute;finir des valeurs par d&eacute;faut contextuelles: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; val peutetre=Some(1)<br />peutetre: Some[Int] = Some(1)<br /><br />scala&gt; peutetre.get<br />res1: Int = 1<br /><br />scala&gt; val rien=None<br />rien: None.type = None<br /><br />scala&gt; rien.get<br />java.util.NoSuchElementException: None.get<br /><br />scala&gt; rien.getOrElse(1)<br />res3: Int = 1<br /><br />scala&gt; peutetre.map(i=&gt; &quot;valeur = &quot; + i).getOrElse(&quot;Rien&quot;)<br />res6: java.lang.String = valeur = 1<br /><br />scala&gt; rien.map(i=&gt; &quot;valeur = &quot; + i).getOrElse(&quot;Rien&quot;)<br />res7: java.lang.String = Rien<br /><br /></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;"> 
+  <br />Les applications n&eacute;cessitent souvent un singleton et les patterns compliqu&eacute;s et souvent bugg&eacute;s ont longtemps fleuri, la r&eacute;ponse de Spring a &eacute;t&eacute; de fournir des singletons de fait et enfin Java 5 a permis de mettre tout le monde d'accord gr&acirc;ce &agrave; une utilisation d&eacute;riv&eacute;e des Enum. Mais voil&agrave; si cette derni&egrave;re option est techniquement justifi&eacute;e, elle reste s&eacute;mantiquement tr&egrave;s discutable. Qu'&agrave; cela ne tienne, puisqu'il s'agit d'un besoin r&eacute;current Scala l'int&egrave;gre dans le langage avec l'object. Efficace et pertinent. 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   L'un des leitmotiv de Scala est que la r&eacute;duction du nombre de lignes de code d'une application &agrave; p&eacute;rim&egrave;tre fonctionnel constant r&eacute;duit les probabilit&eacute;s de bugs. Donc pour permettre la diminution du code &quot;boilerplate&quot;, le langage apporte une quantit&eacute; importante de sucre syntaxique. Le geek est friand par nature du sucre syntaxique. J'ai kiff&eacute;. Quelques exemples: 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   Qui n'a jamais r&ecirc;v&eacute; de la possibilit&eacute; de d&eacute;finir la structure d'un bean an&eacute;mique avec un oneliner? Les case class le permettent car seuls les membres sont d&eacute;finis, le compilateur s'occupe des assesseurs, du constructeur et des m&eacute;thodes equals/hashcode (et plus encore). 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; MyBean(2).equals(3)<br />res8: Boolean = false<br /><br />scala&gt; MyBean(2).equals(MyBean(2))<br />res9: Boolean = true<br /></pre> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;"> 
+  <br />Les placeholders paraissent de prime abord un peu rugueux mais ils deviennent vite habituels. En gros, ils permettent de ne pas d&eacute;clarer ni nommer les param&egrave;tres qu'une closure utilise en fonction de leur position. Ainsi la r&eacute;duction suivante 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; List(1,2,3).foldLeft(0)((acc,elem)=&gt;acc+elem)<br />res19: Int = 6<br /></pre>Peut s'&eacute;crire &eacute;galement: 
+<br /> 
+<pre class="brush: scala">scala&gt; List(1,2,3).foldLeft(0)(_+_)<br />res18: Int = 6<br /></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   Il y a plein d'autres utilisations possibles des placholder (ils ont &eacute;t&eacute; utilis&eacute;s pour pr&eacute;senter les fonctions partielles notamment). 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Un des atouts des case class est leur utilisation avec le pattern matching. Il s'agit d'une autre forme d'instanceOf bas&eacute; &nbsp;sur les extracteurs (tiens encore une fonctionnalit&eacute; int&eacute;gr&eacute;e aux case classes). Je vous livre en l'&eacute;tat un exemple tr&egrave;s incorrect mais qui permet une illustration succincte du concept: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; MyBean(3) match { case MyBean(i) =&gt; i+2 }<br />res20: Int = 5<br /></pre> 
+<div class="p2"> 
+ <div style="text-align: justify;">
+   Cela fonctionne que parce que la d&eacute;finition d'une case class implique la cr&eacute;ation d'un objet compagnon qui fourni un extracteur: 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; MyBean.unapply(MyBean(3))<br />res4: Option[Int] = Some(3)<br /></pre> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;"> 
+  <br />La liste pourrait s'allonger de fa&ccedil;on assez ennuyeuse: pas besoin de ';', pas besoin de parenth&egrave;ses pour les fonctions sans param&egrave;tres, contr&ocirc;le sur l'&eacute;valuation des param&egrave;tres (by name / by value), etc. Mais je vais m'en tenir l&agrave; et passer aux notes un peu plus douloureuses. 
+  <br /> 
+  <br /> 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <h3>Ce qui m'a d&eacute;plu</h3> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <div style="text-align: justify;"> 
+  <br />La conversion implicite, au moyen de wrappers, est une fonctionnalit&eacute; qui permet de d&eacute;corer automatiquement les objets et par ce biais de leur ajouter des m&eacute;thodes. Cela apporte la libert&eacute; syntaxique d'un langage dynamique dans un langage bas&eacute; sur le typage. S&eacute;duisant non? Exemple: 
+ </div> 
+ <pre class="brush: scala">scala&gt; class StringWrapper(s:String){<br />     | def taille=s.length<br />     | }<br />defined class StringWrapper<br /><br />scala&gt; implicit def toWrapString(s:String)=new StringWrapper(s)<br />toWrapString: (s: String)StringWrapper<br /><br />scala&gt; &quot;yes&quot;.taille<br />res0: Int = 3<br /></pre> 
+ <div style="text-align: justify;">
+   Mais pour les activer il faut souvent les importer, de plus naviguer dans les API d'une biblioth&egrave;que tierce devient un enfer. J'aime pas. 
+  <br /> 
+  <br />La programmation fonctionnelle mise sur des conceptions bas&eacute;es sur des appels r&eacute;cursifs. Seulement voil&agrave;, la JVM est la plateforme d'ex&eacute;cution et elle n'appr&eacute;cie qu'avec mod&eacute;ration cette pratique (gare &agrave; la&nbsp;StackOverflowError). Pour contourner cette limitation, Scala sugg&egrave;re d'utiliser la 'tail recursion' qui se caract&eacute;rise par un appel r&eacute;cursif en derni&egrave;re instruction de la fonction. Cette pratique lui permet de modifier le code &agrave; la compilation en boucle for. Le b&eacute;mol est que l'abstraction du language vis &agrave; vis des consid&eacute;rations techniques est bris&eacute;e car la conception est stigmatis&eacute;e par les limites de la JVM. C'est pas sa faute mais j'aime pas. 
+ </div> 
+</div> 
+<div class="p1"></div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Variance, covariance, contravariance, nonvariance… les possibilit&eacute;s de contr&ocirc;le des param&egrave;tres de type sont compl&egrave;tes… et donc &eacute;galement complexes… Difficile de s'y retrouver sans avoir la doc ouverte au bon chapitre. Un exemple: 
+ </div> 
+</div> 
+<pre class="brush: scala">trait MapLike[A, +B, +This &lt;: MapLike[A, B, This] with Map[A, B]] extends collection.MapLike[A, B, This] withParallelizable[(A, B), ParMap[A, B]]<br /></pre> 
+<div class="p1"> 
+ <div style="text-align: justify;">
+   Le code est issu du SDK ( 
+  <a href="http://www.scala-lang.org/api/current/index.html#scala.collection.immutable.MapLike">ici</a>) Je me m'aventurerais pas &agrave; en nier la pertinence, en revanche je suppute que l'&ecirc;tre vivant qui d&eacute;chiffre ces param&egrave;tres d'une traite est s&ucirc;rement capable de donner le nombre exact d'allumettes qui viennent de tomber par terre... 
+ </div> 
+</div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Lorsque l'on tente de d&eacute;river une case class dans une autre case class, voici le message produit par le compilateur (avec l'option deprecation): 
+ </div> 
+</div> 
+<pre class="brush: scala">scala&gt; case class MyBean(id:Int)<br />defined class MyBean<br /><br />scala&gt; case class MySubBean(name:String) extends MyBean(2)<br />
+   
+ <console>
+  
+    :9: warning: case class `class MySubBean' has case ancestor `class MyBean'.  
+    
+  <br />Case-to-case inheritance has potentially dangerous bugs which are unlikely to be fixed.  
+    
+  <br />You are strongly encouraged to instead use extractors to pattern match on non-leaf nodes.
+    
+  <br />
+    
+  <br />
+   
+ </console></pre> 
+<div class="p2">
+  Y a s&ucirc;rement une excellente raison, mais le message est d&eacute;routant. 
+</div> 
+<div class="p1"> 
+ <br /> 
+ <div style="text-align: justify;">
+   Les param&egrave;tres implicites font &agrave; mes yeux partie de ces concepts qui apportent de la magie &agrave; un langage... enfin je dirais plut&ocirc;t de la sorcellerie: 
+ </div> 
+ <pre class="brush: scala">scala&gt; def imprime(implicit x:Int)=println(x)<br />imprime: (implicit x: Int)Unit<br /><br />scala&gt; implicit val test=3<br />test: Int = 3<br /><br />scala&gt; imprime<br />3<br /></pre> 
+ <div> 
+  <div style="text-align: justify;">
+    Simple dans cet exemple, mais vous vous doutez bien que les r&egrave;gles li&eacute;es ne le sont pas autant et si une autre valeur implicite tra&icirc;ne dans les parages, les choses se corsent. Bref je trouve cette fonctionnalit&eacute; dangereuse. 
+  </div> 
+ </div> 
+ <div></div> 
+ <div> 
+  <br /> 
+  <div style="text-align: justify;">
+    Un d&eacute;tail ennuyeux: le code Scala compil&eacute; l'est pour une version pr&eacute;cise de scala ce qui a notamment entra&icirc;n&eacute; l'apparition d'une nouvelle dimension dans les coordonn&eacute;es des d&eacute;pendances... 
+  </div> 
+ </div> 
+</div> 
+<div class="p2"> 
+ <br /> 
+ <div style="text-align: justify;">
+   &quot;With great power comes great responsibility...&quot; Scala m'appara&icirc;t con&ccedil;u pour apporter une solution &agrave; tous les probl&egrave;mes qui ont pu &ecirc;tre lev&eacute;s dans &nbsp;les langages auparavant et tente d'int&eacute;grer toute fonctionnalit&eacute; s&eacute;duisante. Cela le rend il universel? S'il l'est, il l'est pour des d&eacute;veloppeurs universels! Je le trouve assez &eacute;litiste, ce qui me semble &ecirc;tre son principal d&eacute;faut et un frein &agrave; son adoption.&nbsp; 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+ <h3>Ma conclusion</h3> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+ <div style="text-align: justify;"> 
+  <br /> 
+ </div> 
+ <div style="text-align: justify;">
+   S'il est difficile d'attendre d'un langage d'&ecirc;tre l'&eacute;l&eacute;ment qui garanti la r&eacute;ussite d'un projet, Scala prend &agrave; sa charge des sujets sensibles tels que la concurrence, les threads et j'en passe. C'est un plus car le d&eacute;veloppeur peut augmenter son attention sur le code m&eacute;tier.&nbsp; 
+ </div> 
+ <div style="text-align: justify;">
+   C'est un langage qui m&eacute;rite sa place dans l'ecosyst&egrave;me, pas comme un leader du secteur, mais peut-&ecirc;tre comme un Concept Car ou une Formule 1, la plebe dont nous faisons partie esp&eacute;rant voir quelques unes de ses avanc&eacute;es all&eacute;chantes d&eacute;clin&eacute;es dans &nbsp;nos outils quotidiens... Et puis le langage est une chose mais qu'est il sans une stack de d&eacute;veloppement? C'est un autre sujet (to be continued)... 
+ </div> 
+</div> 
+<!--:--> 
+<!----> 
+<!----> 
+<!----> 
+<!---->
+
+    </div>
+
+    
+
+    
+      <ul class="tag_box inline">
+        
+        
+
+
+  
+     
+    		<span class="glyphicon glyphicon-tags"></span>
+<li><a href="/tags.html#scala-ref">scala</a></li>
+    
+  
+
+
+
+      </ul>
+    
+
+      <a href="https://twitter.com/share" class="twitter-share-button" data-via="blep">Tweet</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+      <!-- Placez cette balise où vous souhaitez faire apparaître le gadget Bouton +1. -->
+      <div class="g-plusone"></div>
+
+      <!-- Placez cette ballise après la dernière balise Bouton +1. -->
+      <script type="text/javascript">
+          window.___gcfg = {lang: 'fr'};
+
+          (function() {
+              var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+              po.src = 'https://apis.google.com/js/platform.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+          })();
+      </script>
+
+    <hr>
+    
+    <ul class="pagination">
+      
+        <li class="prev"><a href="/2013/01/06/AngularJS%2B%252B%2BPlay%2521%2BFramework%253A%2BAuthentification" title="AngularJS + Play! Framework&#58; Authentification">&larr; Précédent</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/2013/02/22/Why%2BScala%253A%2BLa%2Bstack%2B%25281%252F2%2529" title="Why Scala&#58; La stack (1/2)">Suivant &rarr;</a></li>
+      
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+
+          </div>
+      </div>
+
+
+      <hr>
+      <footer>
+          <p>
+              &copy; 2014 Brice LEPORINI
+          <span class="pull-right text-muted">
+            powered by
+            <a href="http://dbtek.github.io/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.0.3</a>
+          </span>
+          </p>
+      </footer>
+  </div>
+
+
+    
+
+    <script src="/assets/themes/bootstrap/resources/jquery/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap/resources/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
