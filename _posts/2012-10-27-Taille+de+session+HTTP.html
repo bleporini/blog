@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Taille de session HTTP
-tags: [java profiling visualvm]
+tags: [java, profiling, visualvm]
 ---
 {% include JB/setup %}
 <div class="separator" style="clear: both; text-align: center;"> 
@@ -15,12 +15,12 @@ tags: [java profiling visualvm]
  <li>Clic droit sur la classe : List Objects / with outgoing references:</li> 
 </ul> 
 <div class="separator" style="clear: both; text-align: center;"> 
- <a href="http://1.bp.blogspot.com/-WEzmHJOcDd8/UIuJsXjddjI/AAAAAAAAAkY/Lm-XYxG7Mzs/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.12.23.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="155" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+deI%81cran+2012-10-27+aI%80+09.12.23.png" width="320" /></a> 
+ <a href="http://1.bp.blogspot.com/-WEzmHJOcDd8/UIuJsXjddjI/AAAAAAAAAkY/Lm-XYxG7Mzs/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.12.23.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="155" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.12.23.png" width="320" /></a> 
 </div> 
 <br />Et l&agrave; j'obtiens une vue contenant toutes les sessions et surtout le graal la valeur Retained Heap: 
 <br /> 
 <div class="separator" style="clear: both; text-align: center;"> 
- <a href="http://4.bp.blogspot.com/-LM0qM1GTZqE/UIuKdusfPmI/AAAAAAAAAkg/-ty3_2xDros/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.12.56.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="76" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+deI%81cran+2012-10-27+aI%80+09.12.56.png" width="320" /></a> 
+ <a href="http://4.bp.blogspot.com/-LM0qM1GTZqE/UIuKdusfPmI/AAAAAAAAAkg/-ty3_2xDros/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.12.56.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="76" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.12.56.png" width="320" /></a> 
 </div> 
 <br /> 
 <div style="text-align: justify;">
@@ -34,14 +34,14 @@ tags: [java profiling visualvm]
  <li>G&eacute;n&eacute;ration du dump:</li> 
 </ul> 
 <div class="separator" style="clear: both; text-align: center;"> 
- <a href="http://2.bp.blogspot.com/-RUUy7zTiy5A/UIuN9F7_JtI/AAAAAAAAAkw/w55HoV-wqO4/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.30.16.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="258" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+deI%81cran+2012-10-27+aI%80+09.30.16.png" width="320" /></a> 
+ <a href="http://2.bp.blogspot.com/-RUUy7zTiy5A/UIuN9F7_JtI/AAAAAAAAAkw/w55HoV-wqO4/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.30.16.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="258" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.30.16.png" width="320" /></a> 
 </div> 
 <div class="separator" style="clear: both; text-align: justify;"></div> 
 <ul> 
  <li>Ouverture de la console OQL et ex&eacute;cution de la requ&ecirc;te 'select rsizeof(s) from org.apache.catalina.session.StandardSession s', rsizeof &eacute;tant la fonction permettant de calculer la retained size :</li> 
 </ul> 
 <div style="text-align: center;"> 
- <a href="http://2.bp.blogspot.com/-DUAKO-GNPJA/UIuOsUFW_EI/AAAAAAAAAk4/uVipGXLnDDg/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.34.39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="140" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+deI%81cran+2012-10-27+aI%80+09.34.39.png" width="320" /></a> 
+ <a href="http://2.bp.blogspot.com/-DUAKO-GNPJA/UIuOsUFW_EI/AAAAAAAAAk4/uVipGXLnDDg/s1600/Capture+d%E2%80%99e%CC%81cran+2012-10-27+a%CC%80+09.34.39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="140" src="{{ BASE_PATH }}/assets/img/Taille+de+session+HTTP/Capture+decran+2012-10-27+a+09.34.39.png" width="320" /></a> 
 </div> 
 <div style="text-align: justify;">
   On peut utiliser aussi 
