@@ -1,7 +1,27 @@
 ---
 layout: default
 ---
-{% assign page = site.posts.first %}
-{% assign content = site.posts.first.content %}
 {% include JB/setup %}
-{% include themes/bootstrap/post.html %}
+
+{% for post in site.posts limit:3 %}
+    {% assign page = post %}
+    {% assign content = post.content %}
+
+<div class="page-header">
+    <h1>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1>
+</div>
+
+<div class="row post-full">
+    <div class="col-md-12">
+        <div class="date">
+            <span>{{ page.date | date: "%Y-%m-%d" }}</span>
+        </div>
+        <div class="content">
+            {{ content | truncatewords:75}} <a href="{{ page.url }}">Lire la suite</a><br/>
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+{% endfor %}
