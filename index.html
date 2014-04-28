@@ -17,7 +17,7 @@ layout: default
             <span>{{ page.date | date: "%Y-%m-%d" }}</span>
         </div>
         <div class="content">
-            {{ content | truncatewords:75}} <a href="{{ page.url }}">Lire la suite</a><br/>
+            {{ content | truncatewords:75}} <a href="{{ BASE_PATH }}{{ page.url }}">Lire la suite</a><br/>
         </div>
     </div>
 </div>
