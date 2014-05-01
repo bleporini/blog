@@ -88,7 +88,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : jekyllbootstrap
+      short_name : the-babel-tower
     livefyre :
       site_id : 123
     intensedebate :
