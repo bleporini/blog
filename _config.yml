@@ -106,10 +106,10 @@ JB :
   analytics :
     provider : google 
     google : 
-        tracking_id : 'UA-***'
+        tracking_id : 'UA-315454-4'
     googleUA :
-        tracking_id : 'UA-***'
-        property_name : 'PROPERTY NAME'
+        tracking_id : 'UA-315454-4'
+        property_name : 'the-babel-tower.github.io'
     getclicky :
       site_id : 
     mixpanel :
