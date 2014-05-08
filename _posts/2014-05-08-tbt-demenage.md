@@ -6,7 +6,7 @@ tags : [github, jekyll, blog, java, java8]
 ---
 {% include JB/setup %}
 
-# Ça y est The Babel Tower déménage!
+## Ça y est The Babel Tower déménage!
 
 Ce n'est pas simplement pour répondre à l'appel des sirènes d'une plateforme plus moderne, le mal entre moi et
 blogger était plus profond, voici mes griefs:
