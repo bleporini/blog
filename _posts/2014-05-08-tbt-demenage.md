@@ -2,11 +2,11 @@
 title: blogger.map(JekyllImporter::importBlogger)
 tagline: Ou la migration de mon blog
 layout: post
-tags : [github, jekyll, blog]
+tags : [github, jekyll, blog, java, java8]
 ---
 {% include JB/setup %}
 
-Ça y est The Babel Tower déménage!
+# Ça y est The Babel Tower déménage!
 
 Ce n'est pas simplement pour répondre à l'appel des sirènes d'une plateforme plus moderne, le mal entre moi et
 blogger était plus profond, voici mes griefs:
@@ -70,7 +70,7 @@ Cela permet d'analyser le post pour placer les bonnes classes dans les balises, 
 Pour le design, je me suis appuyé sur mes qualités artistiques internationalement plébiscitées, c'est donc avec une
 audace frisant l'insolence que j'ai utilisé un [thème Bootstrap 3](https://github.com/dbtek/jekyll-bootstrap-3). Je l'ai
 quelque peu manipulé afin qu'il corresponde à l'idée que je me faisais de ce blog. J'y ai rajouté un tag cloud sur mesure
-(je me suis aidé avec google et le press papier) qu'il faudra sûrement réviser à l'avenir.
+(je me suis aidé avec google et du presse papier) qu'il faudra sûrement réviser à l'avenir.
 
 Reste à insérer quelques gadgets Twitter et PlusOne, l'intégration de Disqus est prévue, il n'y a qu'à donner le nom du compte dans le
 fichier de conf, et c'est parti.
@@ -79,6 +79,21 @@ Concernant mon changement d'adresse sur la page Blogger, le plus facile est de r
 Pour les posts, les permalinks n'étant pas les mêmes, prévoir un bout de code JS générique pour rediriger les pages n'est
 pas possible... Donc lors de l'analyse de l'export XML, j'ai inséré quelques lignes de
 JS dans chaque billet pour assurer la redirection. A la fin, l'export est sauvé dans un nouveau fichier XML prêt à être
-réimporté et lorsque une page est visitée, hop le navigateur charge la page et redirige instantanément sur la bonne page
+réimporté et lorsque une page est visitée, hop le navigateur redirige instantanément sur la bonne page
 github.io.
 
+```javascript
+if(window.location.href == 'http://the-babel-tower.blogspot.fr/') {
+    window.location = 'http://the-babel-tower.github.io/';
+}else{
+    window.location='http://the-babel-tower.github.io/2014/02/07/XMLUnit+une+petite+lib+qui+depanne+bien';
+}
+```
+
+Pour ceux qui veulent voir le code qui a servi à la migration, il est dispo sur
+https://github.com/bleporini/blogger2jekyll .
+Java 8 apporte enfin un peu de modernité qui lui faisait défaut. Les éternels insatifaits peuvent toujours troller que
+c'est un peu tard par au regard de la concurrence, mais à quoi bon... J'aime l'orientation fonctionnelle que cette
+version donne au langage, mon code ne comporte qu'un seul `if` et une seule boucle `for`.
+Comme [José Paumard](https://twitter.com/JosePaumard) l'explique, on peut
+maintenant écrire des programmes quasiment sans `Iterator`.
