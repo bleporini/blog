@@ -1,0 +1,96 @@
+---
+layout: default
+title : The babel tower - Thread Dump Analyzer
+no_side: yes
+---
+{% include JB/setup %}
+
+{% assign no_side = "yes" %}
+
+<style>
+    #plainDump{
+        width: 50em;
+        height: 20em;
+        font-family: monospace;
+    }
+
+    .running-thread{
+        color: green;
+        font-weight: bold;
+    }
+    .blocked-thread{
+        color: red;
+        font-weight: bold;
+    }
+    .waiting-thread{
+        color: orange;
+        font-weight: bold;
+    }
+    .timed-waiting-thread{
+        color: darkorange;
+        font-weight: bold;
+    }
+
+    .thread-listing{
+        max-height: 30em;
+        overflow:scroll;
+        /*margin-left: 10px;*/
+    }
+    .leading-tab{
+        padding-left: 1em;
+    }
+    table.info tr td{
+        max-width: 20em;
+        padding-right: 10px;
+    }
+
+    .container {
+        width: 100%;
+    }
+</style>
+
+<script src='{{BASE_PATH}}/assets/js/tda/thread-dump-analyzer-opt.js' type='text/javascript'></script>
+
+<h1>Thread Dump Analyzer</h1>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist" id="tabs">
+    <li role="presentation" class="active"><a href="#dump" aria-controls="home" role="tab" data-toggle="tab">Dump</a></li>
+    <li role="presentation"><a href="#analysis" aria-controls="profile" role="tab" data-toggle="tab">Analysis</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="dump">
+        <br/>
+        <label for="plainDump">Drop your thread dump here</label>
+        <br/>
+        <form onsubmit="return false;">
+            <textarea id="plainDump" spellcheck="false"> </textarea>
+            <br/>
+            <button id="analyze" class="btn btn-primary">Analyze</button>
+            <button id="reset" class="btn btn-primary" type="reset">Reset</button>
+        </form>
+        <div id="alertContainer"></div>
+
+    </div>
+    <div role="tabpanel" class="tab-pane" id="analysis">
+        <br/>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var conf = new io.blep.tda.Configuration({
+        plainDumpId:"plainDump",
+        analyzeBtnId:"analyze",
+        resetBtnId:"reset",
+        alertContainerId: "alertContainer",
+        resultContainerId: "analysis",
+        viewType:"bootstrap"
+    })
+    var controller = io.blep.tda.Controller().init(conf);
+
+    document.body.addEventListener("analysis_finished", function(){
+        $('#tabs a[href="#analysis"]').tab('show')
+    })
+
+</script>
