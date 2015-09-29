@@ -54,3 +54,7 @@ ul.post-collate-side{
 .bs-callout-info {
     border-left-color: #1b809e;
 }
+
+em.highlight{
+    background-color:yellow;
+}
