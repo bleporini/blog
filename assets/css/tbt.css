@@ -58,3 +58,7 @@ ul.post-collate-side{
 em.highlight{
     background-color:yellow;
 }
+
+img.avatar{
+    width: 150px;
+}
